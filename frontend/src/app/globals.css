@@ -1,0 +1,139 @@
+@import "tailwindcss";
+
+@theme {
+  --color-brand-blue: #3b82f6;
+  --color-brand-purple: #8b5cf6;
+  --color-brand-teal: #14b8a6;
+  --color-brand-rose: #f43f5e;
+
+  /* Premium typography mappings */
+  --font-sans: var(--font-geist-sans), sans-serif;
+  --font-mono: var(--font-geist-mono), monospace;
+
+  /* Custom typography scales for compact health dashboards */
+  --font-size-2xs: 0.7rem;   /* ~11px */
+  --font-size-3xs: 0.625rem; /* 10px */
+  --font-size-4xs: 0.55rem;  /* ~8.8px */
+
+  /* Custom color scales for border and text contrast */
+  --color-slate-250: #e2e8f0;
+  --color-slate-350: #cbd5e1;
+  --color-slate-450: #94a3b8;
+  --color-slate-650: #475569;
+  --color-slate-850: #1e293b;
+  
+  --color-red-650: #dc2626;
+  --color-emerald-450: #10b981;
+
+  /* Custom spacing & sizing */
+  --spacing-4.5: 1.125rem; /* 18px */
+  --spacing-8.5: 2.125rem; /* 34px */
+}
+
+:root {
+  --background-rgb: 255, 255, 255;
+  --foreground-rgb: 15, 23, 42;
+  --card-bg-rgb: 255, 255, 255;
+  --card-border-rgb: 226, 232, 240;
+  
+  --shadow-color: rgba(0, 0, 0, 0.03);
+  --shadow-color-md: rgba(0, 0, 0, 0.05);
+}
+
+.dark {
+  --background-rgb: 10, 15, 30;
+  --foreground-rgb: 248, 250, 252;
+  --card-bg-rgb: 20, 25, 45;
+  --card-border-rgb: 38, 48, 86;
+  
+  --shadow-color: rgba(0, 0, 0, 0.2);
+  --shadow-color-md: rgba(0, 0, 0, 0.3);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: rgb(var(--background-rgb));
+  color: rgb(var(--foreground-rgb));
+  font-family: var(--font-sans), sans-serif;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  min-height: 100vh;
+}
+
+/* Custom premium classes */
+.glass-panel {
+  background: rgba(var(--card-bg-rgb), 0.75);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(var(--card-border-rgb), 0.5);
+  box-shadow: 0 4px 30px var(--shadow-color);
+}
+
+.glass-panel-hover {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.glass-panel-hover:hover {
+  transform: translateY(-2px);
+  background: rgba(var(--card-bg-rgb), 0.85);
+  box-shadow: 0 10px 40px var(--shadow-color-md);
+  border-color: rgba(var(--card-border-rgb), 0.8);
+}
+
+.glass-input {
+  background: rgba(var(--card-bg-rgb), 0.4);
+  border: 1px solid rgba(var(--card-border-rgb), 0.8);
+  border-radius: 8px;
+  color: rgb(var(--foreground-rgb));
+  padding: 10px 14px;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.glass-input:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.25);
+  background: rgba(var(--card-bg-rgb), 0.6);
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(147, 51, 234, 0.15);
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(147, 51, 234, 0.3);
+}
+
+/* Animations */
+@keyframes gradient-bg {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.animate-gradient {
+  background-size: 200% 200%;
+  animation: gradient-bg 8s ease infinite;
+}
+
+/* Keyframe for circular loading rings */
+@keyframes dash {
+  to {
+    stroke-dashoffset: 0;
+  }
+}

@@ -1,0 +1,36 @@
+# Dependency directories
+node_modules/
+**/node_modules/
+
+# Next.js build outputs
+.next/
+**/.next/
+out/
+**/out/
+
+# Backend typescript compiled files
+dist/
+**/dist/
+build/
+**/build/
+
+# Local databases & logs
+*.db
+*.db-journal
+*.log
+**/*.db
+**/*.db-journal
+**/*.log
+
+# Environment variables
+.env
+.env.local
+.env.production
+**/ .env
+**/ .env.local
+
+# IDE configurations & caches
+.idea/
+.vscode/
+.DS_Store
+*.tsbuildinfo

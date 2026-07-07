@@ -1,0 +1,220 @@
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id           String         @id @default(uuid())
+  email        String         @unique
+  password     String
+  name         String
+  age          Int?
+  gender       String?
+  height       Float? // in cm
+  weight       Float? // in kg
+  medicalNotes String? // medical conditions
+  goals        String? // target steps, water, etc. JSON string or simple text
+  emergencyContact String?
+  profilePic   String?
+  role         String         @default("USER") // USER, ADMIN
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+
+  settings     Settings?
+  healthLogs   DailyHealth[]
+  notifications Notifications[]
+  emails       EmailHistory[]
+  adminProfile Admin?
+}
+
+model Settings {
+  id                   String  @id @default(uuid())
+  userId               String  @unique
+  user                 User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  darkMode             Boolean @default(false)
+  language             String  @default("en")
+  privacySettings      String  @default("private")
+  notificationSettings String  @default("all") // all, important, none
+}
+
+model Admin {
+  id          String   @id @default(uuid())
+  userId      String   @unique
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  permissions String   @default("all")
+  createdAt   DateTime @default(now())
+}
+
+model DailyHealth {
+  id             String         @id @default(uuid())
+  userId         String
+  user           User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  date           String // YYYY-MM-DD
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+
+  sleep          Sleep?
+  stress         Stress?
+  mood           Mood?
+  water          Water?
+  food           Food?
+  exercise       Exercise?
+  steps          Steps?
+  heartRate      HeartRate?
+  bloodPressure  BloodPressure?
+  bloodSugar     BloodSugar?
+  medication     Medication?
+  symptom        Symptom?
+  healthScore    HealthScore?
+
+  @@unique([userId, date])
+}
+
+model Sleep {
+  id            String      @id @default(uuid())
+  dailyHealthId String      @unique
+  dailyHealth   DailyHealth @relation(fields: [dailyHealthId], references: [id], onDelete: Cascade)
+  sleepTime     String? // HH:MM
+  wakeTime      String? // HH:MM
+  duration      Float // in hours
+  quality       Int // 1 - 10
+}
+
+model Stress {
+  id            String      @id @default(uuid())
+  dailyHealthId String      @unique
+  dailyHealth   DailyHealth @relation(fields: [dailyHealthId], references: [id], onDelete: Cascade)
+  level         Int // 1 - 10
+  anxiety       Int // 1 - 10
+  happiness     Int // 1 - 10
+  energy        Int // 1 - 10
+  focus         Int // 1 - 10
+  productivity  Int // 1 - 10
+}
+
+model Mood {
+  id            String      @id @default(uuid())
+  dailyHealthId String      @unique
+  dailyHealth   DailyHealth @relation(fields: [dailyHealthId], references: [id], onDelete: Cascade)
+  emoji         String // 😀, 😐, 😞, 😡, 😴
+}
+
+model Water {
+  id            String      @id @default(uuid())
+  dailyHealthId String      @unique
+  dailyHealth   DailyHealth @relation(fields: [dailyHealthId], references: [id], onDelete: Cascade)
+  glasses       Int
+}
+
+model Food {
+  id            String      @id @default(uuid())
+  dailyHealthId String      @unique
+  dailyHealth   DailyHealth @relation(fields: [dailyHealthId], references: [id], onDelete: Cascade)
+  breakfast     String?
+  lunch         String?
+  dinner        String?
+  snacks        String?
+  hasJunk       Boolean     @default(false)
+  hasHealthy    Boolean     @default(false)
+  calories      Int         @default(0)
+  protein       Float       @default(0) // grams
+  carbs         Float       @default(0) // grams
+  fat           Float       @default(0) // grams
+  sugar         Float       @default(0) // grams
+  fiber         Float       @default(0) // grams
+}
+
+model Exercise {
+  id            String      @id @default(uuid())
+  dailyHealthId String      @unique
+  dailyHealth   DailyHealth @relation(fields: [dailyHealthId], references: [id], onDelete: Cascade)
+  workoutToday  Boolean     @default(false)
+  type          String? // Running, Walking, Cycling, Gym, Yoga, Stretching
+  duration      Int         @default(0) // in minutes
+  caloriesBurned Int        @default(0)
+}
+
+model Steps {
+  id            String      @id @default(uuid())
+  dailyHealthId String      @unique
+  dailyHealth   DailyHealth @relation(fields: [dailyHealthId], references: [id], onDelete: Cascade)
+  count         Int         @default(0)
+  distance      Float       @default(0.0) // in km
+  activeMinutes Int         @default(0)
+  caloriesBurned Int        @default(0)
+}
+
+model HeartRate {
+  id            String      @id @default(uuid())
+  dailyHealthId String      @unique
+  dailyHealth   DailyHealth @relation(fields: [dailyHealthId], references: [id], onDelete: Cascade)
+  bpm           Int
+  source        String      @default("manual") // manual or smart-device
+}
+
+model BloodPressure {
+  id            String      @id @default(uuid())
+  dailyHealthId String      @unique
+  dailyHealth   DailyHealth @relation(fields: [dailyHealthId], references: [id], onDelete: Cascade)
+  systolic      Int
+  diastolic     Int
+}
+
+model BloodSugar {
+  id            String      @id @default(uuid())
+  dailyHealthId String      @unique
+  dailyHealth   DailyHealth @relation(fields: [dailyHealthId], references: [id], onDelete: Cascade)
+  level         Float
+}
+
+model Medication {
+  id            String      @id @default(uuid())
+  dailyHealthId String      @unique
+  dailyHealth   DailyHealth @relation(fields: [dailyHealthId], references: [id], onDelete: Cascade)
+  taken         Boolean
+  notes         String?
+}
+
+model Symptom {
+  id            String      @id @default(uuid())
+  dailyHealthId String      @unique
+  dailyHealth   DailyHealth @relation(fields: [dailyHealthId], references: [id], onDelete: Cascade)
+  headache      Boolean     @default(false)
+  cold          Boolean     @default(false)
+  fever         Boolean     @default(false)
+  pain          Boolean     @default(false)
+  fatigue       Boolean     @default(false)
+  other         String?
+}
+
+model HealthScore {
+  id            String      @id @default(uuid())
+  dailyHealthId String      @unique
+  dailyHealth   DailyHealth @relation(fields: [dailyHealthId], references: [id], onDelete: Cascade)
+  score         Int
+  rating        String // Excellent, Good, Average, Poor
+}
+
+model Notifications {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title     String
+  message   String
+  type      String   @default("info") // info, reminder, alert
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
+
+model EmailHistory {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  sentAt    DateTime @default(now())
+  subject   String
+  status    String   @default("success")
+}
