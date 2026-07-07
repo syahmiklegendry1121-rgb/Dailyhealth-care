@@ -555,7 +555,7 @@ export default function LandingPage() {
           <p className="text-blue-100 max-w-xl mx-auto text-base">Start tracking your sleep, stress, activity, and goals with AI support today.</p>
           <Link 
             href="/auth?tab=register"
-            className="inline-block px-9 py-4.5 bg-white text-blue-750 font-black rounded-2xl hover:bg-slate-100 hover:scale-[1.02] transform active:scale-[0.98] transition-all duration-200 text-base shadow-xl"
+            className="inline-block px-9 py-4.5 bg-slate-950 text-white font-black rounded-2xl hover:bg-slate-900 hover:scale-[1.02] transform active:scale-[0.98] transition-all duration-200 text-base shadow-xl border border-slate-800"
           >
             Create Account
           </Link>
@@ -601,7 +601,7 @@ export default function LandingPage() {
           <div>
             <h4 className="text-xs font-bold text-white uppercase tracking-wider mb-5">Support</h4>
             <p className="text-xs leading-relaxed text-slate-500 mb-4 font-semibold">For inquiries, support, or privacy questions, reach out to us at:</p>
-            <p className="text-xs text-blue-400 font-bold hover:underline cursor-pointer">support@dailyhealth.com</p>
+            <p className="text-xs text-blue-400 font-bold hover:underline cursor-pointer">syahmiklegendry1121@gmail.com</p>
           </div>
 
         </div>
