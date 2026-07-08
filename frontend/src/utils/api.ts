@@ -244,6 +244,7 @@ class MobileSensorManager {
   private intervalId: any = null;
   private data: SensorData = { steps: 0, distance: 0, calories: 0, activeMinutes: 0, speed: 0 };
   private listeners: ((data: SensorData) => void)[] = [];
+  private motionHandler: ((event: DeviceMotionEvent) => void) | null = null;
 
   async requestPermission(): Promise<boolean> {
     if (typeof window === 'undefined') return false;
@@ -276,7 +277,11 @@ class MobileSensorManager {
     const stepThreshold = 1.6; // Dynamic threshold above gravity baseline (m/s^2)
     const stepCooldown = 380; // Standard human walk step cooldown in ms (approx 160 steps/min maximum)
 
-    window.addEventListener('devicemotion', (event) => {
+    if (this.motionHandler) {
+      window.removeEventListener('devicemotion', this.motionHandler);
+    }
+
+    this.motionHandler = (event) => {
       // Prefer linear acceleration (excludes gravity) over accelerationIncludingGravity
       const acc = event.acceleration || event.accelerationIncludingGravity;
       if (!acc) return;
@@ -304,7 +309,9 @@ class MobileSensorManager {
           lastStepTime = now;
         }
       }
-    });
+    };
+
+    window.addEventListener('devicemotion', this.motionHandler);
   }
 
   private startSimulation() {
@@ -342,6 +349,18 @@ class MobileSensorManager {
   reset() {
     this.data = { steps: 0, distance: 0, calories: 0, activeMinutes: 0, speed: 0 };
     this.notifyListeners();
+  }
+
+  stop() {
+    this.active = false;
+    if (this.intervalId) {
+      clearInterval(this.intervalId);
+      this.intervalId = null;
+    }
+    if (this.motionHandler && typeof window !== 'undefined') {
+      window.removeEventListener('devicemotion', this.motionHandler);
+      this.motionHandler = null;
+    }
   }
 
   subscribe(callback: (data: SensorData) => void) {

@@ -71,6 +71,7 @@ export default function Dashboard() {
   const [sensorPermission, setSensorPermission] = useState<'prompt' | 'granted' | 'denied'>('prompt');
   const [sensorData, setSensorData] = useState({ steps: 0, distance: 0.0, calories: 0, activeMinutes: 0, speed: 0.0 });
   const [sensorSyncing, setSensorSyncing] = useState(false);
+  const [sensorActive, setSensorActive] = useState(false);
 
   // Notification state
   const [notifications, setNotifications] = useState<any[]>([]);
@@ -204,6 +205,7 @@ export default function Dashboard() {
       const granted = await sensorManager.requestPermission();
       if (granted) {
         setSensorPermission('granted');
+        setSensorActive(true);
         // Push notification of active sensor
         setNotifications(prev => [
           {
@@ -222,6 +224,22 @@ export default function Dashboard() {
     } catch (e) {
       setSensorPermission('denied');
     }
+  };
+
+  const handleDisableSensors = () => {
+    sensorManager.stop();
+    setSensorActive(false);
+    setNotifications(prev => [
+      {
+        id: 'sensor-deactivated-' + Date.now(),
+        title: 'Mobile Pedometer Deactivated',
+        message: 'Step counting and sensor synchronization have been paused.',
+        type: 'info',
+        read: false,
+        createdAt: new Date().toISOString()
+      },
+      ...prev
+    ]);
   };
 
   const handleSignOut = () => {
@@ -467,17 +485,21 @@ export default function Dashboard() {
                     {t('logWellness')}
                   </button>
                   
-                  {sensorPermission !== 'granted' ? (
+                  {(!sensorActive || sensorPermission !== 'granted') ? (
                     <button 
                       onClick={handleEnableSensors}
-                      className="px-6 py-3.5 bg-white/20 text-white border border-white/30 font-extrabold rounded-2xl hover:bg-white/30 transform active:scale-95 transition-all text-xs flex items-center justify-center gap-1.5"
+                      className="px-6 py-3.5 bg-white/20 text-white border border-white/30 font-extrabold rounded-2xl hover:bg-white/30 transform active:scale-95 transition-all text-xs flex items-center justify-center gap-1.5 cursor-pointer"
                     >
                       <Smartphone className="w-4 h-4" /> {t('activateSensor')}
                     </button>
                   ) : (
-                    <div className="px-5 py-3 bg-emerald-500/20 border border-emerald-500/30 text-emerald-300 rounded-2xl text-xs flex items-center justify-center gap-1.5 font-bold">
-                      <Smartphone className="w-4 h-4 animate-bounce" /> {t('sensorActive')}
-                    </div>
+                    <button 
+                      onClick={handleDisableSensors}
+                      className="px-6 py-3.5 bg-red-650 hover:bg-red-500 text-white font-extrabold rounded-2xl shadow-md hover:scale-[1.02] transform active:scale-95 transition-all text-xs flex items-center justify-center gap-1.5 cursor-pointer"
+                      title="Deactivate sensor sync and stop steps live counting"
+                    >
+                      <Smartphone className="w-4 h-4 animate-pulse" /> Deactivate Sensor
+                    </button>
                   )}
                 </div>
               </div>
