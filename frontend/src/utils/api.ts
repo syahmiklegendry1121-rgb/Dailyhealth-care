@@ -271,26 +271,32 @@ class MobileSensorManager {
     if (typeof window === 'undefined') return;
 
     let lastStepTime = 0;
-    let smoothMagnitude = 9.8; // Gravity fallback
-    const alpha = 0.15; // Low-pass filter smoothing coefficient
-    const stepThreshold = 11.4; // Peak acceleration threshold (m/s^2)
-    const stepCooldown = 350; // Minimum time between human steps (milliseconds)
+    let smoothMagnitude = 0; 
+    const alpha = 0.2; // Low-pass filter smoothing coefficient
+    const stepThreshold = 1.6; // Dynamic threshold above gravity baseline (m/s^2)
+    const stepCooldown = 380; // Standard human walk step cooldown in ms (approx 160 steps/min maximum)
 
     window.addEventListener('devicemotion', (event) => {
-      const acc = event.accelerationIncludingGravity;
+      // Prefer linear acceleration (excludes gravity) over accelerationIncludingGravity
+      const acc = event.acceleration || event.accelerationIncludingGravity;
       if (!acc) return;
 
       const x = acc.x || 0;
       const y = acc.y || 0;
-      const z = acc.z || 9.8; // default gravity
+      const z = acc.z || 0;
 
-      // 1. Calculate vector magnitude of the acceleration
-      const magnitude = Math.sqrt(x * x + y * y + z * z);
+      // 1. Calculate vector magnitude
+      let magnitude = Math.sqrt(x * x + y * y + z * z);
 
-      // 2. Smooth magnitude using low-pass filter
+      // 2. If gravity is included, subtract the gravity baseline
+      if (acc === event.accelerationIncludingGravity) {
+        magnitude = Math.abs(magnitude - 9.80665);
+      }
+
+      // 3. Smooth the magnitude using a low-pass filter
       smoothMagnitude = alpha * magnitude + (1 - alpha) * smoothMagnitude;
 
-      // 3. Peak-crossing check with debounce cooldown
+      // 4. Peak-crossing check with strict walk step cooldown
       if (smoothMagnitude > stepThreshold) {
         const now = Date.now();
         if (now - lastStepTime > stepCooldown) {
