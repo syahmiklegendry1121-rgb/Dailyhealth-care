@@ -140,12 +140,123 @@ export default function SettingsTab({ onLanguageChange }: SettingsTabProps) {
   const handleExportData = async () => {
     try {
       const data = await exportUserData();
-      // Use application/octet-stream to force browser file-save dialog instead of previewing JSON as text
-      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/octet-stream' });
+      
+      let stepsTarget = 10000;
+      let waterTarget = 8;
+      let sleepTarget = 8;
+      let caloriesTarget = 2200;
+      let bloodGroup = 'N/A';
+      let doctor = 'None';
+      let allergiesInfo = 'None';
+
+      if (data.goals) {
+        try {
+          const parsed = JSON.parse(data.goals);
+          if (parsed.steps) stepsTarget = parsed.steps;
+          if (parsed.water) waterTarget = parsed.water;
+          if (parsed.sleep) sleepTarget = parsed.sleep;
+          if (parsed.calories) caloriesTarget = parsed.calories;
+          if (parsed.bloodType) bloodGroup = parsed.bloodType;
+          if (parsed.primaryDoctor) doctor = parsed.primaryDoctor;
+          if (parsed.allergies) allergiesInfo = parsed.allergies;
+        } catch (e) {
+          console.warn(e);
+        }
+      }
+
+      let report = `==================================================\n`;
+      report += `      DAILYHEALTH PROFILE & WELLNESS REPORT\n`;
+      report += `==================================================\n`;
+      report += `Generated on: ${new Date().toLocaleString('en-US')}\n\n`;
+
+      report += `--------------------------------------------------\n`;
+      report += `1. PERSONAL PROFILE\n`;
+      report += `--------------------------------------------------\n`;
+      report += `Name: ${data.name || 'N/A'}\n`;
+      report += `Email: ${data.email || 'N/A'}\n`;
+      report += `Age: ${data.age ? data.age + ' years' : 'N/A'}\n`;
+      report += `Gender: ${data.gender || 'N/A'}\n`;
+      report += `Height: ${data.height ? data.height + ' cm' : 'N/A'}\n`;
+      report += `Weight: ${data.weight ? data.weight + ' kg' : 'N/A'}\n`;
+      report += `Blood Group: ${bloodGroup}\n`;
+      report += `Primary Physician: ${doctor}\n`;
+      report += `Emergency Contact: ${data.emergencyContact || 'None'}\n\n`;
+
+      report += `--------------------------------------------------\n`;
+      report += `2. MEDICAL CONDITIONS & NOTES\n`;
+      report += `--------------------------------------------------\n`;
+      report += `Medical Notes: ${data.medicalNotes || 'No chronic conditions recorded.'}\n`;
+      report += `Allergies / Intolerances: ${allergiesInfo}\n\n`;
+
+      report += `--------------------------------------------------\n`;
+      report += `3. DAILY WELLNESS TARGETS\n`;
+      report += `--------------------------------------------------\n`;
+      report += `Target Steps: ${stepsTarget.toLocaleString()} steps/day\n`;
+      report += `Target Hydration: ${waterTarget} glasses/day\n`;
+      report += `Target Sleep: ${sleepTarget} hours/night\n`;
+      report += `Target Calories: ${caloriesTarget} kcal/day\n\n`;
+
+      report += `--------------------------------------------------\n`;
+      report += `4. RECENT HEALTH LOGS HISTORY\n`;
+      report += `--------------------------------------------------\n`;
+      
+      const logs = data.healthLogs || [];
+      if (logs.length === 0) {
+        report += `No daily health logs found in history.\n`;
+      } else {
+        const sortedLogs = [...logs].sort((x: any, y: any) => y.date.localeCompare(x.date));
+        sortedLogs.forEach((log: any) => {
+          report += `- Date: ${log.date}\n`;
+          if (log.steps) {
+            report += `  Steps: ${log.steps.count.toLocaleString()} steps (${log.steps.distance} km)\n`;
+          }
+          if (log.sleep) {
+            report += `  Sleep: ${log.sleep.duration} hours (Quality: ${log.sleep.quality}/10)\n`;
+          }
+          if (log.water) {
+            report += `  Water: ${log.water.glasses} glasses\n`;
+          }
+          if (log.stress) {
+            report += `  Stress Level: ${log.stress.level}/10 (Energy: ${log.stress.energy}/10, Focus: ${log.stress.focus}/10)\n`;
+          }
+          if (log.heartRate) {
+            report += `  Heart Rate: ${log.heartRate.bpm} bpm\n`;
+          }
+          if (log.bloodPressure) {
+            report += `  Blood Pressure: ${log.bloodPressure.systolic}/${log.bloodPressure.diastolic} mmHg\n`;
+          }
+          if (log.bloodSugar) {
+            report += `  Blood Sugar: ${log.bloodSugar.level} mg/dL\n`;
+          }
+          if (log.medication) {
+            report += `  Medication: ${log.medication.taken ? 'Taken' : 'Not Taken'} (${log.medication.notes || 'No notes'})\n`;
+          }
+          if (log.symptom) {
+            const symptoms = [];
+            if (log.symptom.headache) symptoms.push('Headache');
+            if (log.symptom.cold) symptoms.push('Cold/Flu');
+            if (log.symptom.fever) symptoms.push('Fever');
+            if (log.symptom.pain) symptoms.push('Muscle Pain');
+            if (log.symptom.fatigue) symptoms.push('Fatigue');
+            if (log.symptom.other) symptoms.push(log.symptom.other);
+            report += `  Symptoms: ${symptoms.length > 0 ? symptoms.join(', ') : 'None'}\n`;
+          }
+          if (log.healthScore) {
+            report += `  Daily Health Index: ${log.healthScore.score}/100 (${log.healthScore.rating})\n`;
+          }
+          report += `\n`;
+        });
+      }
+
+      report += `==================================================\n`;
+      report += `Report compiled by DailyHealth AI Wellness Assistant.\n`;
+      report += `==================================================\n`;
+
+      const blob = new Blob([report], { type: 'text/plain;charset=utf-8' });
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `health_data_export_${new Date().toISOString().split('T')[0]}.json`;
+      a.download = `health_profile_report_${new Date().toISOString().split('T')[0]}.txt`;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
@@ -279,7 +390,7 @@ export default function SettingsTab({ onLanguageChange }: SettingsTabProps) {
                 className="w-full py-3 border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 font-bold rounded-xl text-xs flex items-center justify-center gap-2 transition-all"
               >
                 <Download className="w-4 h-4 text-blue-500" />
-                Export Full Health Profile (JSON)
+                Export Full Health Profile (English Report)
               </button>
               
               <button
