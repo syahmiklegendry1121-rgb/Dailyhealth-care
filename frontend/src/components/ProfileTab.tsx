@@ -201,14 +201,6 @@ export default function ProfileTab({ onProfileUpdate }: ProfileTabProps) {
               />
             </label>
 
-            <div className="text-4xs text-slate-400 mt-2 font-bold select-none">Or paste image URL:</div>
-            <input
-              type="text"
-              placeholder="Profile Picture URL"
-              value={profilePic}
-              onChange={(e) => setProfilePic(e.target.value)}
-              className="w-full glass-input text-2xs mt-1"
-            />
           </div>
 
           <div className="p-6 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
