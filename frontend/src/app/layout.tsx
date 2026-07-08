@@ -51,8 +51,22 @@ export default function RootLayout({
             `
           }}
         />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              function googleTranslateElementInit() {
+                new google.translate.TranslateElement({
+                  pageLanguage: 'en',
+                  autoDisplay: false
+                }, 'google_translate_element');
+              }
+            `
+          }}
+        />
+        <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" async defer></script>
       </head>
       <body className="min-h-screen flex flex-col bg-slate-50 dark:bg-[#060a13]">
+        <div id="google_translate_element" style={{ display: 'none' }} />
         <PwaRegister />
         {children}
       </body>

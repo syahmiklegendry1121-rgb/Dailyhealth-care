@@ -134,3 +134,19 @@ body {
     stroke-dashoffset: 0;
   }
 }
+
+/* Google Translate Widget Override */
+.goog-te-banner-frame,
+.goog-te-banner,
+.goog-te-menu-frame,
+.goog-tooltip,
+.goog-tooltip:hover {
+  display: none !important;
+}
+body {
+  top: 0px !important;
+}
+.goog-text-highlight {
+  background-color: transparent !important;
+  box-shadow: none !important;
+}

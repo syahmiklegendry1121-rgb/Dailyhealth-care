@@ -98,6 +98,11 @@ export default function SettingsTab({ onLanguageChange }: SettingsTabProps) {
         notificationSettings: updatedNotifs
       });
       setSuccess('Settings updated successfully.');
+      
+      if (field === 'language') {
+        const { setLanguageCookie } = await import('@/utils/translations');
+        setLanguageCookie(updatedLanguage);
+      }
     } catch (err: any) {
       setError(err.message || 'Failed to update preferences.');
     }

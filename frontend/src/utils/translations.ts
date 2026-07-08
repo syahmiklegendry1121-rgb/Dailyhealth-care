@@ -549,3 +549,24 @@ export const translations = {
     kcal: "ಕ್ಯಾಲೋರಿ"
   }
 };
+
+// Helper to set Google Translate cookie and reload to translate the entire webpage
+export function setLanguageCookie(lang: string) {
+  if (typeof document !== 'undefined') {
+    const cookieVal = lang === 'en' ? '' : `/en/${lang}`;
+    
+    document.cookie = `googtrans=${cookieVal}; path=/`;
+    
+    const host = window.location.hostname;
+    document.cookie = `googtrans=${cookieVal}; path=/; domain=${host}`;
+    
+    const parts = host.split('.');
+    if (parts.length > 2) {
+      const rootDomain = parts.slice(-2).join('.');
+      document.cookie = `googtrans=${cookieVal}; path=/; domain=.${rootDomain}`;
+    }
+
+    localStorage.setItem('theme_lang', lang);
+    window.location.reload();
+  }
+}

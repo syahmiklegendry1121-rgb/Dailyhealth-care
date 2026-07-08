@@ -27,6 +27,21 @@ export default function LandingPage() {
   const [activeFaq, setActiveFaq] = useState<number | null>(null);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
+  const [appLang, setAppLang] = useState('en');
+
+  // Check language preferences and theme settings
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const lang = localStorage.getItem('theme_lang') || 'en';
+      setAppLang(lang);
+    }
+  }, []);
+
+  const handleLanguageChange = async (lang: string) => {
+    setAppLang(lang);
+    const { setLanguageCookie } = await import('@/utils/translations');
+    setLanguageCookie(lang);
+  };
 
   // Check dark mode
   useEffect(() => {
@@ -104,6 +119,26 @@ export default function LandingPage() {
 
           {/* Actions & Buttons */}
           <div className="hidden md:flex items-center gap-8">
+            <select
+              value={appLang}
+              onChange={(e) => handleLanguageChange(e.target.value)}
+              className="bg-transparent text-xs font-extrabold text-slate-700 dark:text-slate-300 border border-slate-250 dark:border-slate-800 rounded-xl px-3 py-2 cursor-pointer outline-none hover:bg-slate-100 dark:hover:bg-slate-900 transition-all"
+            >
+              <option value="en">English</option>
+              <option value="hi">हिन्दी (Hindi)</option>
+              <option value="bn">বাংলা (Bengali)</option>
+              <option value="mr">मराठी (Marathi)</option>
+              <option value="te">తెలుగు (Telugu)</option>
+              <option value="ta">தமிழ் (Tamil)</option>
+              <option value="gu">ગુજરાતી (Gujarati)</option>
+              <option value="ur">اردو (Urdu)</option>
+              <option value="kn">ಕನ್ನಡ (Kannada)</option>
+              <option value="tcy">ತುಳು (Tulu)</option>
+              <option value="es">Español</option>
+              <option value="fr">Français</option>
+              <option value="de">Deutsch</option>
+            </select>
+
             <button 
               onClick={toggleDarkMode}
               className="p-3 rounded-xl border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-900 transition-colors text-slate-500 dark:text-slate-400 cursor-pointer"
@@ -129,6 +164,26 @@ export default function LandingPage() {
 
           {/* Mobile Navigation controls */}
           <div className="flex items-center gap-4 md:hidden">
+            <select
+              value={appLang}
+              onChange={(e) => handleLanguageChange(e.target.value)}
+              className="bg-transparent text-xs font-extrabold text-slate-700 dark:text-slate-300 border border-slate-250 dark:border-slate-800 rounded-xl px-2.5 py-1.5 cursor-pointer outline-none hover:bg-slate-100 dark:hover:bg-slate-900 transition-all"
+            >
+              <option value="en">EN</option>
+              <option value="hi">HI</option>
+              <option value="bn">BN</option>
+              <option value="mr">MR</option>
+              <option value="te">TE</option>
+              <option value="ta">TA</option>
+              <option value="gu">GU</option>
+              <option value="ur">UR</option>
+              <option value="kn">KN</option>
+              <option value="tcy">TCY</option>
+              <option value="es">ES</option>
+              <option value="fr">FR</option>
+              <option value="de">DE</option>
+            </select>
+
             <button 
               onClick={toggleDarkMode}
               className="p-2.5 rounded-lg border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300"
