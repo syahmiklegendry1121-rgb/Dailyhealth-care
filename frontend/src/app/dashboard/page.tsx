@@ -333,7 +333,6 @@ export default function Dashboard() {
               { id: 'analytics', icon: TrendingUp },
               { id: 'insights', icon: Sparkles },
               { id: 'profile', icon: User },
-              { id: 'settings', icon: Settings },
             ].map(tab => (
               <button
                 key={tab.id}
@@ -413,36 +412,38 @@ export default function Dashboard() {
               )}
             </div>
 
-            <div className="flex items-center gap-2.5 pl-3 border-l border-slate-250 dark:border-slate-850">
-              <div className="w-8.5 h-8.5 rounded-full bg-blue-500/10 flex items-center justify-center border border-blue-500/20 text-blue-500 font-extrabold text-sm uppercase">
+            <div 
+              onClick={() => setActiveTab('settings')}
+              className="flex items-center gap-2.5 pl-3 border-l border-slate-250 dark:border-slate-850 cursor-pointer hover:opacity-80 transition-all select-none group"
+              title="Open Settings"
+            >
+              <div className="w-8.5 h-8.5 rounded-full bg-blue-500/10 flex items-center justify-center border border-blue-500/20 text-blue-500 font-extrabold text-sm uppercase group-hover:scale-105 transition-transform">
                 {user?.name?.slice(0, 2)}
               </div>
               <div className="hidden lg:flex flex-col text-left">
-                <span className="text-xs font-bold text-slate-900 dark:text-white leading-none">{user?.name}</span>
+                <span className="text-xs font-bold text-slate-900 dark:text-white leading-none group-hover:text-blue-500 transition-colors">{user?.name}</span>
                 <span className="text-4xs text-slate-400 font-bold uppercase mt-1 tracking-wide">{user?.role}</span>
               </div>
-              <button 
-                onClick={handleSignOut}
-                className="p-2 rounded-xl text-red-500 hover:bg-red-500/10 transition-colors"
-                title="Log Out"
-              >
-                <LogOut className="w-4 h-4" />
-              </button>
             </div>
+            <button 
+              onClick={handleSignOut}
+              className="p-2 rounded-xl text-red-500 hover:bg-red-500/10 transition-colors"
+              title="Log Out"
+            >
+              <LogOut className="w-4 h-4" />
+            </button>
 
           </div>
 
         </div>
       </header>
 
-      {/* MOBILE BOTTOM NAVIGATION (Tab bar style) */}
       <div className="md:hidden fixed bottom-0 left-0 right-0 glass-panel border-t border-slate-250 dark:border-slate-855 shadow-2xl p-2 z-40 flex justify-around">
         {[
           { id: 'overview', icon: Activity },
           { id: 'analytics', icon: TrendingUp },
           { id: 'insights', icon: Sparkles },
           { id: 'profile', icon: User },
-          { id: 'settings', icon: Settings },
         ].map(tab => (
           <button
             key={tab.id}
