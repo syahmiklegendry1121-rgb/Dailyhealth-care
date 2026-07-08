@@ -270,8 +270,11 @@ class MobileSensorManager {
   private initAccelerometer() {
     if (typeof window === 'undefined') return;
 
-    let lastX = 0, lastY = 0, lastZ = 0;
-    let threshold = 12; // step movement trigger threshold
+    let lastStepTime = 0;
+    let smoothMagnitude = 9.8; // Gravity fallback
+    const alpha = 0.15; // Low-pass filter smoothing coefficient
+    const stepThreshold = 11.4; // Peak acceleration threshold (m/s^2)
+    const stepCooldown = 350; // Minimum time between human steps (milliseconds)
 
     window.addEventListener('devicemotion', (event) => {
       const acc = event.accelerationIncludingGravity;
@@ -279,20 +282,22 @@ class MobileSensorManager {
 
       const x = acc.x || 0;
       const y = acc.y || 0;
-      const z = acc.z || 0;
+      const z = acc.z || 9.8; // default gravity
 
-      const deltaX = Math.abs(x - lastX);
-      const deltaY = Math.abs(y - lastY);
-      const deltaZ = Math.abs(z - lastZ);
+      // 1. Calculate vector magnitude of the acceleration
+      const magnitude = Math.sqrt(x * x + y * y + z * z);
 
-      if ((deltaX + deltaY + deltaZ) > threshold) {
-        // Accelerometer detected step
-        this.addSteps(1);
+      // 2. Smooth magnitude using low-pass filter
+      smoothMagnitude = alpha * magnitude + (1 - alpha) * smoothMagnitude;
+
+      // 3. Peak-crossing check with debounce cooldown
+      if (smoothMagnitude > stepThreshold) {
+        const now = Date.now();
+        if (now - lastStepTime > stepCooldown) {
+          this.addSteps(1);
+          lastStepTime = now;
+        }
       }
-
-      lastX = x;
-      lastY = y;
-      lastZ = z;
     });
   }
 

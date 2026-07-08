@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Heart, Activity, Moon, Droplet, Flame, Compass, Pill, ShieldAlert, 
   Award, TrendingUp, Sparkles, User, Settings, LogOut, Bell, ShieldCheck, 
@@ -24,6 +25,29 @@ export default function Dashboard() {
   const [token, setToken] = useState<string | null>(null);
   const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+
+  // Theme & Logout states
+  const [isDarkMode, setIsDarkMode] = useState(false);
+  const [isSignOutModalOpen, setIsSignOutModalOpen] = useState(false);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const isDark = document.documentElement.classList.contains('dark');
+      setIsDarkMode(isDark);
+    }
+  }, []);
+
+  const toggleDarkMode = () => {
+    if (isDarkMode) {
+      document.documentElement.classList.remove('dark');
+      localStorage.setItem('theme', 'light');
+      setIsDarkMode(false);
+    } else {
+      document.documentElement.classList.add('dark');
+      localStorage.setItem('theme', 'dark');
+      setIsDarkMode(true);
+    }
+  };
 
   // Tabs
   const [activeTab, setActiveTab] = useState<'overview' | 'analytics' | 'insights' | 'profile' | 'settings' | 'admin'>('overview');
@@ -185,7 +209,12 @@ export default function Dashboard() {
   };
 
   const handleSignOut = () => {
+    setIsSignOutModalOpen(true);
+  };
+
+  const handleConfirmSignOut = () => {
     localStorage.clear();
+    setIsSignOutModalOpen(false);
     router.push('/');
   };
 
@@ -296,11 +325,20 @@ export default function Dashboard() {
           {/* User Details & Notifications dropdown */}
           <div className="flex items-center gap-4">
             
+            {/* Theme Toggle */}
+            <button 
+              onClick={toggleDarkMode}
+              className="p-2 rounded-xl border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-900 transition-colors text-slate-600 dark:text-slate-355 cursor-pointer"
+              title="Toggle Dark Mode"
+            >
+              {isDarkMode ? <Activity className="w-4 h-4 text-yellow-450" /> : <Moon className="w-4 h-4" />}
+            </button>
+
             {/* Notification Bell */}
             <div className="relative">
               <button 
                 onClick={() => setNotifDropdownOpen(!notifDropdownOpen)}
-                className="p-2 rounded-xl border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-900 transition-all text-slate-600 dark:text-slate-300 relative"
+                className="p-2 rounded-xl border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-900 transition-all text-slate-660 dark:text-slate-300 relative"
               >
                 <Bell className="w-4 h-4" />
                 {unreadNotificationsCount > 0 && (
@@ -674,6 +712,41 @@ export default function Dashboard() {
         onSuccess={handleQuestionnaireSuccess}
         initialData={todayLog}
       />
+
+      {/* SIGN OUT CONFIRMATION MODAL */}
+      <AnimatePresence>
+        {isSignOutModalOpen && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-md">
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              className="w-full max-w-sm p-6 rounded-[28px] bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-800 shadow-2xl text-center"
+            >
+              <div className="w-12 h-12 rounded-full bg-red-500/10 text-red-500 flex items-center justify-center mx-auto mb-4">
+                <LogOut className="w-6 h-6" />
+              </div>
+              <h3 className="text-lg font-extrabold text-slate-950 dark:text-white mb-2">Sign Out Confirmation</h3>
+              <p className="text-xs text-slate-500 mb-6">Are you sure you want to log out of your DailyHealth account? You will need to sign in again to access your dashboard.</p>
+              
+              <div className="flex gap-4">
+                <button
+                  onClick={() => setIsSignOutModalOpen(false)}
+                  className="w-1/2 py-2.5 rounded-xl border border-slate-200 dark:border-slate-850 text-slate-700 dark:text-slate-300 font-bold text-xs hover:bg-slate-50 dark:hover:bg-slate-850 transition-all cursor-pointer"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleConfirmSignOut}
+                  className="w-1/2 py-2.5 rounded-xl bg-gradient-to-r from-red-650 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white font-bold text-xs shadow-md transition-all cursor-pointer"
+                >
+                  Confirm Sign Out
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
 
     </div>
   );

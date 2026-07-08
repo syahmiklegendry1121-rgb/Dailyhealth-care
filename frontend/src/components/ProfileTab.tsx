@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { User, ShieldAlert, Award, RefreshCw, FileText } from 'lucide-react';
+import { User, ShieldAlert, Award, RefreshCw, FileText, Upload, HeartHandshake } from 'lucide-react';
 import { getProfile, updateProfile } from '@/utils/api';
 
 interface ProfileTabProps {
@@ -24,7 +24,12 @@ export default function ProfileTab({ onProfileUpdate }: ProfileTabProps) {
   const [emergencyContact, setEmergencyContact] = useState('');
   const [profilePic, setProfilePic] = useState('');
 
-  // Targets (inside goals)
+  // Customized User Profiles (stored inside goals JSON string)
+  const [bloodType, setBloodType] = useState('O+');
+  const [allergies, setAllergies] = useState('');
+  const [primaryDoctor, setPrimaryDoctor] = useState('');
+
+  // Daily targets (stored inside goals JSON string)
   const [targetSteps, setTargetSteps] = useState(10000);
   const [targetWater, setTargetWater] = useState(8);
   const [targetSleep, setTargetSleep] = useState(8);
@@ -51,6 +56,9 @@ export default function ProfileTab({ onProfileUpdate }: ProfileTabProps) {
           if (parsed.water) setTargetWater(parsed.water);
           if (parsed.sleep) setTargetSleep(parsed.sleep);
           if (parsed.calories) setTargetCalories(parsed.calories);
+          if (parsed.bloodType) setBloodType(parsed.bloodType);
+          if (parsed.allergies) setAllergies(parsed.allergies);
+          if (parsed.primaryDoctor) setPrimaryDoctor(parsed.primaryDoctor);
         } catch (e) {
           console.warn('Failed to parse goals JSON:', e);
         }
@@ -66,6 +74,26 @@ export default function ProfileTab({ onProfileUpdate }: ProfileTabProps) {
     fetchProfileData();
   }, []);
 
+  // Handle local DP image upload and encode to Base64
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Limit size to 2MB to keep DB fast
+    if (file.size > 2 * 1024 * 1024) {
+      alert("Image size should be less than 2MB.");
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      if (typeof reader.result === 'string') {
+        setProfilePic(reader.result);
+      }
+    };
+    reader.readAsDataURL(file);
+  };
+
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
     setSaving(true);
@@ -76,7 +104,10 @@ export default function ProfileTab({ onProfileUpdate }: ProfileTabProps) {
       steps: Number(targetSteps),
       water: Number(targetWater),
       sleep: Number(targetSleep),
-      calories: Number(targetCalories)
+      calories: Number(targetCalories),
+      bloodType,
+      allergies,
+      primaryDoctor
     };
 
     try {
@@ -94,11 +125,11 @@ export default function ProfileTab({ onProfileUpdate }: ProfileTabProps) {
 
       const res = await updateProfile(payload);
       
-      // Update local storage dh_user name
       const localUserStr = localStorage.getItem('dh_user');
       if (localUserStr) {
         const local = JSON.parse(localUserStr);
         local.name = name;
+        local.profilePic = profilePic;
         localStorage.setItem('dh_user', JSON.stringify(local));
       }
 
@@ -154,14 +185,29 @@ export default function ProfileTab({ onProfileUpdate }: ProfileTabProps) {
                 <User className="w-12 h-12" />
               )}
             </div>
+            
             <h4 className="font-bold text-slate-900 dark:text-white text-sm">{name}</h4>
             <p className="text-3xs text-slate-450 mt-0.5">Physical profile editor</p>
+            
+            {/* User Gallery Upload DP Button */}
+            <label className="w-full mt-4 flex items-center justify-center gap-1.5 py-2.5 border border-dashed border-slate-300 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-850 rounded-xl cursor-pointer text-2xs font-extrabold text-slate-600 dark:text-slate-350 transition-colors">
+              <Upload className="w-3.5 h-3.5 text-blue-500" />
+              <span>Choose from Gallery</span>
+              <input 
+                type="file" 
+                accept="image/*" 
+                onChange={handleImageUpload} 
+                className="hidden" 
+              />
+            </label>
+
+            <div className="text-4xs text-slate-400 mt-2 font-bold select-none">Or paste image URL:</div>
             <input
               type="text"
               placeholder="Profile Picture URL"
               value={profilePic}
               onChange={(e) => setProfilePic(e.target.value)}
-              className="w-full glass-input text-2xs mt-4"
+              className="w-full glass-input text-2xs mt-1"
             />
           </div>
 
@@ -192,7 +238,7 @@ export default function ProfileTab({ onProfileUpdate }: ProfileTabProps) {
           </div>
         </div>
 
-        {/* Right Columns: Vitals & Medical Conditions */}
+        {/* Right Columns: Physiological Data & Customized Profiles */}
         <div className="md:col-span-2 space-y-6">
           <div className="p-6 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm space-y-6">
             <h4 className="font-extrabold text-slate-950 dark:text-white text-xs uppercase tracking-wide">Physiological Data</h4>
@@ -224,6 +270,51 @@ export default function ProfileTab({ onProfileUpdate }: ProfileTabProps) {
               </div>
             </div>
 
+            {/* CUSTOMIZED USER PROFILE PARAMETERS */}
+            <div className="border-t border-slate-100 dark:border-slate-800/80 pt-6 space-y-4">
+              <h5 className="font-bold text-slate-900 dark:text-white text-xs flex items-center gap-1.5">
+                <HeartHandshake className="w-4 h-4 text-emerald-500" />
+                Customized Profile Details
+              </h5>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-3xs font-bold text-slate-455 uppercase mb-1.5">Blood Group</label>
+                  <select value={bloodType} onChange={(e) => setBloodType(e.target.value)} className="w-full glass-input text-xs">
+                    <option value="A+">A+</option>
+                    <option value="A-">A-</option>
+                    <option value="B+">B+</option>
+                    <option value="B-">B-</option>
+                    <option value="AB+">AB+</option>
+                    <option value="AB-">AB-</option>
+                    <option value="O+">O+</option>
+                    <option value="O-">O-</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-3xs font-bold text-slate-455 uppercase mb-1.5">Primary Physician</label>
+                  <input 
+                    type="text" 
+                    placeholder="Dr. Name or Contact" 
+                    value={primaryDoctor} 
+                    onChange={(e) => setPrimaryDoctor(e.target.value)} 
+                    className="w-full glass-input text-xs" 
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-3xs font-bold text-slate-455 uppercase mb-1.5">Allergies & Intolerances</label>
+                <input 
+                  type="text" 
+                  placeholder="e.g. Penicillin, Gluten, Peanuts, None" 
+                  value={allergies} 
+                  onChange={(e) => setAllergies(e.target.value)} 
+                  className="w-full glass-input text-xs" 
+                />
+              </div>
+            </div>
+
             <div className="grid grid-cols-1 gap-4">
               <div>
                 <label className="block text-3xs font-bold text-slate-450 uppercase mb-1.5 flex items-center gap-1">
@@ -236,7 +327,7 @@ export default function ProfileTab({ onProfileUpdate }: ProfileTabProps) {
                   <FileText className="w-3.5 h-3.5 text-blue-500" /> Medical Conditions / Notes
                 </label>
                 <textarea
-                  placeholder="e.g. Asthma, allergies to penicillin, previous heart condition details"
+                  placeholder="e.g. Asthma, previous heart condition details"
                   value={medicalNotes}
                   onChange={(e) => setMedicalNotes(e.target.value)}
                   className="w-full glass-input text-xs h-28 resize-none"
@@ -247,7 +338,7 @@ export default function ProfileTab({ onProfileUpdate }: ProfileTabProps) {
             <button
               type="submit"
               disabled={saving}
-              className="px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white font-bold rounded-xl text-xs shadow-lg shadow-blue-500/10 hover:shadow-blue-500/20 transition-all flex items-center justify-center gap-1.5"
+              className="px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white font-bold rounded-xl text-xs shadow-lg shadow-blue-500/10 hover:shadow-blue-500/20 transition-all flex items-center justify-center gap-1.5 cursor-pointer"
             >
               {saving ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : 'Save Profile Details'}
             </button>

@@ -128,7 +128,8 @@ export default function SettingsTab() {
   const handleExportData = async () => {
     try {
       const data = await exportUserData();
-      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+      // Use application/octet-stream to force browser file-save dialog instead of previewing JSON as text
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/octet-stream' });
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
@@ -222,6 +223,15 @@ export default function SettingsTab() {
                 className="glass-input text-2xs py-1 px-2.5 font-bold"
               >
                 <option value="en">English (US)</option>
+                <option value="hi">हिन्दी (Hindi)</option>
+                <option value="bn">বাংলা (Bengali)</option>
+                <option value="mr">मराठी (Marathi)</option>
+                <option value="te">తెలుగు (Telugu)</option>
+                <option value="ta">தமிழ் (Tamil)</option>
+                <option value="gu">ગુજરાતી (Gujarati)</option>
+                <option value="ur">اردو (Urdu)</option>
+                <option value="kn">ಕನ್ನಡ (Kannada)</option>
+                <option value="tcy">ತುಳು (Tulu)</option>
                 <option value="es">Español</option>
                 <option value="fr">Français</option>
                 <option value="de">Deutsch</option>
