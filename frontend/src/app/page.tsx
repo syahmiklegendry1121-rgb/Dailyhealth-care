@@ -17,7 +17,8 @@ import {
   Star,
   Zap,
   Menu,
-  X
+  X,
+  Pill
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -489,6 +490,52 @@ export default function LandingPage() {
 
           </div>
 
+        </div>
+      </section>
+
+      {/* HEALTH TRACKING METRICS DIRECTORY */}
+      <section className="py-24 px-6 sm:px-10 lg:px-16 bg-slate-100/20 dark:bg-slate-900/5 border-t border-slate-200/50 dark:border-slate-800/40">
+        <div className="max-w-8xl mx-auto text-center">
+          <div className="max-w-3xl mx-auto mb-16">
+            <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+              Interactive Health Directory
+            </h2>
+            <p className="text-slate-500 dark:text-slate-400 mt-4 text-base leading-relaxed">
+              Explore professional insights and guidelines for each critical wellness metric. Click any card to view detailed stages, age ranges, patterns, and medical recommendations in a new tab.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+            {[
+              { id: 'steps', title: 'Step Tracker', desc: 'Daily steps, physical targets, active walking speeds, and calorie burn conversion.', icon: Activity, color: 'text-blue-500 bg-blue-500/10' },
+              { id: 'sleep', title: 'Sleep Tracker', desc: 'Sleep cycles, REM/Deep/Light stages, optimal duration, and 14-hour pattern details.', icon: Moon, color: 'text-purple-500 bg-purple-500/10' },
+              { id: 'hydration', title: 'Hydration Tracker', desc: 'Hydration limits, water intake index, dehydration alerts, and consumption guidelines.', icon: Droplet, color: 'text-sky-500 bg-sky-500/10' },
+              { id: 'stress', title: 'Stress Index', desc: 'Cortisol level tracking, stress scores, heart-rate variability, and relaxation techniques.', icon: Zap, color: 'text-red-500 bg-red-500/10' },
+              { id: 'heartRate', title: 'Heart Rate', desc: 'Pulse frequency zones, bradycardia and tachycardia warnings, and aerobic targets.', icon: Heart, color: 'text-rose-500 bg-rose-500/10' },
+              { id: 'bloodSugar', title: 'Blood Sugar', desc: 'Fasting vs post-prandial ranges, pre-diabetic thresholds, and glycemic load analysis.', icon: Activity, color: 'text-amber-500 bg-amber-500/10' },
+              { id: 'bloodPressure', title: 'Blood Pressure', desc: 'Systolic and diastolic markers, hypertension stages, and stroke prevention tips.', icon: TrendingUp, color: 'text-emerald-500 bg-emerald-500/10' },
+              { id: 'medication', title: 'Medication', desc: 'Prescription schedules, dosage reminders, drug adherence plans, and precautions.', icon: Pill, color: 'text-indigo-500 bg-indigo-500/10' }
+            ].map(card => (
+              <Link
+                key={card.id}
+                href={`/education?metric=${card.id}`}
+                target="_blank"
+                className="group p-8 rounded-[32px] bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-lg hover:border-blue-500/30 transition-all duration-300 hover:scale-[1.02] transform flex flex-col justify-between text-left h-72 cursor-pointer"
+              >
+                <div>
+                  <div className="w-12 h-12 rounded-2xl bg-slate-50 dark:bg-slate-850 flex items-center justify-center mb-6 transition-transform group-hover:scale-110 duration-300">
+                    <card.icon className={`w-6 h-6 ${card.color.split(' ')[0]}`} />
+                  </div>
+                  <h3 className="text-lg font-black text-slate-900 dark:text-white mb-3 group-hover:text-blue-500 transition-colors">{card.title}</h3>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed font-semibold">{card.desc}</p>
+                </div>
+                <div className="flex items-center gap-1.5 text-3xs font-extrabold text-blue-500 mt-4 uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity">
+                  <span>Learn more</span>
+                  <ChevronRight className="w-3.5 h-3.5" />
+                </div>
+              </Link>
+            ))}
+          </div>
         </div>
       </section>
 
