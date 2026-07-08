@@ -9,7 +9,11 @@ import {
   getSettings, updateSettings, changePassword, exportUserData, deleteUserAccount 
 } from '@/utils/api';
 
-export default function SettingsTab() {
+interface SettingsTabProps {
+  onLanguageChange?: (lang: string) => void;
+}
+
+export default function SettingsTab({ onLanguageChange }: SettingsTabProps) {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -75,6 +79,9 @@ export default function SettingsTab() {
     } else if (field === 'language') {
       updatedLanguage = val;
       setLanguage(val);
+      if (onLanguageChange) {
+        onLanguageChange(val);
+      }
     } else if (field === 'privacySettings') {
       updatedPrivacy = val;
       setPrivacySettings(val);

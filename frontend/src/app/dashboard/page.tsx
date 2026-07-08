@@ -15,8 +15,9 @@ import SettingsTab from '@/components/SettingsTab';
 import AdminTab from '@/components/AdminTab';
 import { 
   getHealthHistory, getHealthInsights, syncMobileSteps, sensorManager, 
-  getNotifications, markNotificationAsRead, markAllNotificationsAsRead 
+  getNotifications, markNotificationAsRead, markAllNotificationsAsRead, getSettings 
 } from '@/utils/api';
+import { translations, TranslationKey } from '@/utils/translations';
 
 export default function Dashboard() {
   const router = useRouter();
@@ -29,6 +30,12 @@ export default function Dashboard() {
   // Theme & Logout states
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [isSignOutModalOpen, setIsSignOutModalOpen] = useState(false);
+  const [appLanguage, setAppLanguage] = useState('en');
+
+  const t = (key: string): string => {
+    const langDict = (translations as any)[appLanguage] || translations.en;
+    return langDict[key] || (translations.en as any)[key] || String(key);
+  };
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -124,6 +131,15 @@ export default function Dashboard() {
       const notifs = await getNotifications();
       setNotifications(notifs);
 
+      // Get settings
+      try {
+        const s = await getSettings();
+        if (s && s.language) {
+          setAppLanguage(s.language);
+        }
+      } catch (e) {
+        console.warn('Failed to load language settings:', e);
+      }
     } catch (e) {
       console.error('Failed to load dashboard logs:', e);
     } finally {
@@ -295,29 +311,29 @@ export default function Dashboard() {
           {/* Navigation Tabs */}
           <nav className="hidden md:flex gap-1.5 p-1 rounded-xl bg-slate-100 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-850">
             {[
-              { id: 'overview', label: 'Overview', icon: Activity },
-              { id: 'analytics', label: 'Analytics', icon: TrendingUp },
-              { id: 'insights', label: 'AI Insights', icon: Sparkles },
-              { id: 'profile', label: 'Profile', icon: User },
-              { id: 'settings', label: 'Settings', icon: Settings },
+              { id: 'overview', icon: Activity },
+              { id: 'analytics', icon: TrendingUp },
+              { id: 'insights', icon: Sparkles },
+              { id: 'profile', icon: User },
+              { id: 'settings', icon: Settings },
             ].map(tab => (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id as any)}
-                className={`flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-bold transition-all ${activeTab === tab.id ? 'bg-white dark:bg-slate-800 text-blue-600 dark:text-blue-400 shadow-sm' : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-350'}`}
+                className={`flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-bold transition-all ${activeTab === tab.id ? 'bg-white dark:bg-slate-800 text-blue-600 dark:text-blue-400 shadow-sm' : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-355'}`}
               >
                 <tab.icon className="w-3.5 h-3.5" />
-                {tab.label}
+                {t(tab.id as TranslationKey)}
               </button>
             ))}
 
             {user?.role === 'ADMIN' && (
               <button
                 onClick={() => setActiveTab('admin')}
-                className={`flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-bold transition-all ${activeTab === 'admin' ? 'bg-white dark:bg-slate-850 text-purple-600 dark:text-purple-400 shadow-sm' : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-350'}`}
+                className={`flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-bold transition-all ${activeTab === 'admin' ? 'bg-white dark:bg-slate-855 text-purple-600 dark:text-purple-400 shadow-sm' : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-355'}`}
               >
                 <ShieldCheck className="w-3.5 h-3.5" />
-                Admin Panel
+                {t('adminPanel')}
               </button>
             )}
           </nav>
@@ -350,14 +366,14 @@ export default function Dashboard() {
               {notifDropdownOpen && (
                 <div className="absolute right-0 mt-3 w-80 glass-panel border border-slate-200 dark:border-slate-800 rounded-2xl shadow-xl p-4 z-50 text-left">
                   <div className="flex justify-between items-center pb-2.5 border-b border-slate-200 dark:border-slate-800 mb-3">
-                    <span className="font-bold text-xs">Notifications ({unreadNotificationsCount})</span>
+                    <span className="font-bold text-xs">{t('notifications')} ({unreadNotificationsCount})</span>
                     {unreadNotificationsCount > 0 && (
-                      <button onClick={handleMarkAllRead} className="text-3xs text-blue-500 hover:underline font-bold">Mark all read</button>
+                      <button onClick={handleMarkAllRead} className="text-3xs text-blue-500 hover:underline font-bold">{t('markAllRead')}</button>
                     )}
                   </div>
                   <div className="max-h-60 overflow-y-auto space-y-2.5">
                     {notifications.length === 0 ? (
-                      <p className="text-3xs text-slate-400 text-center py-4">No new notifications.</p>
+                      <p className="text-3xs text-slate-400 text-center py-4">{t('noNotifications')}</p>
                     ) : (
                       notifications.map(n => (
                         <div 
@@ -402,13 +418,13 @@ export default function Dashboard() {
       </header>
 
       {/* MOBILE BOTTOM NAVIGATION (Tab bar style) */}
-      <div className="md:hidden fixed bottom-0 left-0 right-0 glass-panel border-t border-slate-250 dark:border-slate-850 shadow-2xl p-2 z-40 flex justify-around">
+      <div className="md:hidden fixed bottom-0 left-0 right-0 glass-panel border-t border-slate-250 dark:border-slate-855 shadow-2xl p-2 z-40 flex justify-around">
         {[
-          { id: 'overview', label: 'Overview', icon: Activity },
-          { id: 'analytics', label: 'Trends', icon: TrendingUp },
-          { id: 'insights', label: 'AI Tips', icon: Sparkles },
-          { id: 'profile', label: 'Profile', icon: User },
-          { id: 'settings', label: 'Settings', icon: Settings },
+          { id: 'overview', icon: Activity },
+          { id: 'analytics', icon: TrendingUp },
+          { id: 'insights', icon: Sparkles },
+          { id: 'profile', icon: User },
+          { id: 'settings', icon: Settings },
         ].map(tab => (
           <button
             key={tab.id}
@@ -416,7 +432,7 @@ export default function Dashboard() {
             className={`flex flex-col items-center gap-1 py-1 px-3 rounded-lg text-4xs font-bold transition-all ${activeTab === tab.id ? 'text-blue-500' : 'text-slate-450 hover:text-slate-700'}`}
           >
             <tab.icon className="w-5 h-5" />
-            {tab.label}
+            {t(tab.id as TranslationKey)}
           </button>
         ))}
       </div>
@@ -437,7 +453,7 @@ export default function Dashboard() {
                 
                 <div>
                   <span className="text-xs uppercase tracking-widest font-bold opacity-80">{new Date().toLocaleDateString(undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</span>
-                  <h2 className="text-3xl font-black mt-2">Hello, {user?.name}!</h2>
+                  <h2 className="text-3xl font-black mt-2">{t('welcomeBack')}, {user?.name}!</h2>
                   <p className="text-sm opacity-90 mt-4 max-w-md italic leading-relaxed">
                     "{quote}"
                   </p>
@@ -448,7 +464,7 @@ export default function Dashboard() {
                     onClick={() => setIsQuestionnaireOpen(true)}
                     className="px-6 py-3.5 bg-white text-blue-700 font-extrabold rounded-2xl shadow-md hover:bg-slate-100 transform active:scale-95 transition-all text-xs"
                   >
-                    Log Daily Questionnaire
+                    {t('logWellness')}
                   </button>
                   
                   {sensorPermission !== 'granted' ? (
@@ -456,11 +472,11 @@ export default function Dashboard() {
                       onClick={handleEnableSensors}
                       className="px-6 py-3.5 bg-white/20 text-white border border-white/30 font-extrabold rounded-2xl hover:bg-white/30 transform active:scale-95 transition-all text-xs flex items-center justify-center gap-1.5"
                     >
-                      <Smartphone className="w-4 h-4" /> Connect Fit Sensors
+                      <Smartphone className="w-4 h-4" /> {t('activateSensor')}
                     </button>
                   ) : (
                     <div className="px-5 py-3 bg-emerald-500/20 border border-emerald-500/30 text-emerald-300 rounded-2xl text-xs flex items-center justify-center gap-1.5 font-bold">
-                      <Smartphone className="w-4 h-4 animate-bounce" /> Mobile Pedometer Synced
+                      <Smartphone className="w-4 h-4 animate-bounce" /> {t('sensorActive')}
                     </div>
                   )}
                 </div>
@@ -468,7 +484,7 @@ export default function Dashboard() {
 
               {/* Progress Ring Card */}
               <div className="p-10 rounded-[32px] bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-800/80 shadow-md flex flex-col items-center justify-center text-center">
-                <span className="text-2xs text-slate-400 font-bold uppercase tracking-wide mb-4">Today's Health Index</span>
+                <span className="text-2xs text-slate-400 font-bold uppercase tracking-wide mb-4">{t('healthScore')}</span>
                 
                 <div className="relative w-40 h-40 flex items-center justify-center">
                   <svg viewBox="0 0 160 160" className="w-full h-full transform -rotate-90">
@@ -503,7 +519,7 @@ export default function Dashboard() {
               {/* Card: Steps */}
               <div className="p-8 rounded-[32px] bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-800/80 shadow-md flex flex-col justify-between text-left hover:border-blue-500/35 transition-all hover:scale-[1.01]">
                 <div className="flex justify-between items-center mb-2">
-                  <span className="text-2xs text-slate-450 font-bold uppercase">Daily Steps</span>
+                  <span className="text-2xs text-slate-450 font-bold uppercase">{t('stepTracker')}</span>
                   <Smartphone className="w-5.5 h-5.5 text-blue-500" />
                 </div>
                 <div>
@@ -517,7 +533,7 @@ export default function Dashboard() {
               {/* Card: Sleep */}
               <div className="p-8 rounded-[32px] bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-800/80 shadow-md flex flex-col justify-between text-left hover:border-purple-500/35 transition-all hover:scale-[1.01]">
                 <div className="flex justify-between items-center mb-2">
-                  <span className="text-2xs text-slate-455 font-bold uppercase">Sleep Time</span>
+                  <span className="text-2xs text-slate-455 font-bold uppercase">{t('sleepTracker')}</span>
                   <Moon className="w-5.5 h-5.5 text-purple-500" />
                 </div>
                 <div>
@@ -531,7 +547,7 @@ export default function Dashboard() {
               {/* Card: Water */}
               <div className="p-8 rounded-[32px] bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-800/80 shadow-md flex flex-col justify-between text-left hover:border-sky-500/35 transition-all hover:scale-[1.01]">
                 <div className="flex justify-between items-center mb-2">
-                  <span className="text-2xs text-slate-455 font-bold uppercase">Hydration</span>
+                  <span className="text-2xs text-slate-455 font-bold uppercase">{t('hydrationTracker')}</span>
                   <Droplet className="w-5.5 h-5.5 text-sky-500" />
                 </div>
                 <div>
@@ -698,7 +714,7 @@ export default function Dashboard() {
         )}
 
         {/* SETTINGS TAB */}
-        {activeTab === 'settings' && <SettingsTab />}
+        {activeTab === 'settings' && <SettingsTab onLanguageChange={(lang) => setAppLanguage(lang)} />}
 
         {/* ADMIN TAB */}
         {activeTab === 'admin' && user?.role === 'ADMIN' && <AdminTab />}
