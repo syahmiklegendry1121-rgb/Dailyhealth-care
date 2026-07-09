@@ -71,11 +71,16 @@ export default function LandingPage() {
     }
   };
 
-  // Check language preferences and theme settings
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  // Check language preferences, theme settings, and auth status
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const lang = localStorage.getItem('theme_lang') || 'en';
       setAppLang(lang);
+      
+      const token = localStorage.getItem('dh_token');
+      setIsLoggedIn(!!token);
     }
   }, []);
 
@@ -189,19 +194,30 @@ export default function LandingPage() {
               {isDarkMode ? <Activity className="w-4.5 h-4.5 text-yellow-400" /> : <Moon className="w-4.5 h-4.5" />}
             </button>
             
-            <Link 
-              href="/auth?tab=login" 
-              className="text-sm font-extrabold text-slate-700 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors whitespace-nowrap"
-            >
-              Sign In
-            </Link>
-            
-            <Link 
-              href="/auth?tab=register" 
-              className="px-7 py-3 rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white text-sm font-extrabold shadow-lg shadow-blue-500/10 hover:shadow-blue-500/20 hover:scale-[1.02] transform active:scale-[0.98] transition-all duration-200 whitespace-nowrap"
-            >
-              Sign Up
-            </Link>
+            {!isLoggedIn ? (
+              <>
+                <Link 
+                  href="/auth?tab=login" 
+                  className="text-sm font-extrabold text-slate-700 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors whitespace-nowrap"
+                >
+                  Sign In
+                </Link>
+                
+                <Link 
+                  href="/auth?tab=register" 
+                  className="px-7 py-3 rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white text-sm font-extrabold shadow-lg shadow-blue-500/10 hover:shadow-blue-500/20 hover:scale-[1.02] transform active:scale-[0.98] transition-all duration-200 whitespace-nowrap"
+                >
+                  Sign Up
+                </Link>
+              </>
+            ) : (
+              <Link 
+                href="/dashboard" 
+                className="px-7 py-3 rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white text-sm font-extrabold shadow-lg shadow-blue-500/10 hover:shadow-blue-500/20 hover:scale-[1.02] transform active:scale-[0.98] transition-all duration-200 whitespace-nowrap"
+              >
+                Go to Dashboard
+              </Link>
+            )}
           </div>
 
           {/* Mobile Navigation controls */}
@@ -257,13 +273,21 @@ export default function LandingPage() {
               <Link href="#faq" onClick={() => setMobileMenuOpen(false)} className="py-2.5 text-sm font-bold text-slate-755 dark:text-slate-300">FAQ</Link>
               <Link href="/dashboard" onClick={() => setMobileMenuOpen(false)} className="py-2.5 text-sm font-bold text-slate-755 dark:text-slate-300">Dashboard</Link>
               <hr className="border-slate-200 dark:border-slate-850 my-1" />
-              <div className="flex gap-4 items-center">
-                <Link href="/auth?tab=login" onClick={() => setMobileMenuOpen(false)} className="w-1/2 text-center py-3 rounded-xl border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 font-extrabold text-sm">
-                  Sign In
-                </Link>
-                <Link href="/auth?tab=register" onClick={() => setMobileMenuOpen(false)} className="w-1/2 text-center py-3 rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 text-white font-extrabold text-sm">
-                  Sign Up
-                </Link>
+              <div className="flex gap-4 items-center w-full">
+                {!isLoggedIn ? (
+                  <>
+                    <Link href="/auth?tab=login" onClick={() => setMobileMenuOpen(false)} className="w-1/2 text-center py-3 rounded-xl border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 font-extrabold text-sm">
+                      Sign In
+                    </Link>
+                    <Link href="/auth?tab=register" onClick={() => setMobileMenuOpen(false)} className="w-1/2 text-center py-3 rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 text-white font-extrabold text-sm">
+                      Sign Up
+                    </Link>
+                  </>
+                ) : (
+                  <Link href="/dashboard" onClick={() => setMobileMenuOpen(false)} className="w-full text-center py-3 rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 text-white font-extrabold text-sm">
+                    Go to Dashboard
+                  </Link>
+                )}
               </div>
             </motion.div>
           )}
@@ -290,12 +314,21 @@ export default function LandingPage() {
             </p>
 
             <div className="flex flex-col sm:flex-row gap-5 pt-4">
-              <Link 
-                href="/auth?tab=register"
-                className="px-9 py-5 rounded-2xl bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-550 text-white font-extrabold text-center shadow-xl shadow-blue-500/25 hover:scale-[1.02] transform active:scale-[0.98] transition-all duration-205 text-base"
-              >
-                Start Free Trial
-              </Link>
+              {!isLoggedIn ? (
+                <Link 
+                  href="/auth?tab=register"
+                  className="px-9 py-5 rounded-2xl bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-550 text-white font-extrabold text-center shadow-xl shadow-blue-500/25 hover:scale-[1.02] transform active:scale-[0.98] transition-all duration-205 text-base"
+                >
+                  Start Free Trial
+                </Link>
+              ) : (
+                <Link 
+                  href="/dashboard"
+                  className="px-9 py-5 rounded-2xl bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-550 text-white font-extrabold text-center shadow-xl shadow-blue-500/25 hover:scale-[1.02] transform active:scale-[0.98] transition-all duration-205 text-base"
+                >
+                  Go to Dashboard
+                </Link>
+              )}
               <Link 
                 href="#features"
                 className="px-9 py-5 rounded-2xl border border-slate-250 dark:border-slate-800 bg-white/60 hover:bg-white dark:bg-slate-900/50 dark:hover:bg-slate-900 font-extrabold text-slate-700 dark:text-slate-300 text-center hover:scale-[1.02] transform transition-all duration-200 text-base"
@@ -708,12 +741,21 @@ export default function LandingPage() {
           <h2 className="text-4xl sm:text-5xl font-black">Ready to take control of your health?</h2>
           <p className="text-blue-100 max-w-xl mx-auto text-base">Start tracking your sleep, stress, activity, and goals with AI support today.</p>
           <div className="flex flex-col gap-4.5 items-center pt-4">
-             <Link 
-               href="/auth?tab=register"
-               className="px-9 py-4.5 bg-slate-950 text-white font-black rounded-2xl hover:bg-slate-900 hover:scale-[1.02] transform active:scale-[0.98] transition-all duration-200 text-base shadow-xl border border-slate-800 w-full sm:w-auto inline-block text-center"
-             >
-               Create Account
-             </Link>
+             {!isLoggedIn ? (
+               <Link 
+                 href="/auth?tab=register"
+                 className="px-9 py-4.5 bg-slate-950 text-white font-black rounded-2xl hover:bg-slate-900 hover:scale-[1.02] transform active:scale-[0.98] transition-all duration-200 text-base shadow-xl border border-slate-800 w-full sm:w-auto inline-block text-center"
+               >
+                 Create Account
+               </Link>
+             ) : (
+               <Link 
+                 href="/dashboard"
+                 className="px-9 py-4.5 bg-slate-950 text-white font-black rounded-2xl hover:bg-slate-900 hover:scale-[1.02] transform active:scale-[0.98] transition-all duration-200 text-base shadow-xl border border-slate-800 w-full sm:w-auto inline-block text-center"
+               >
+                 Go to Dashboard
+               </Link>
+             )}
              {!isInstalled && (
                <button 
                  onClick={handleInstallClick}
