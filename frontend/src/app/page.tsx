@@ -29,6 +29,37 @@ export default function LandingPage() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [appLang, setAppLang] = useState('en');
+  const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
+
+  // Monitor PWA installation status
+  useEffect(() => {
+    const handleBeforeInstallPrompt = (e: Event) => {
+      e.preventDefault();
+      setDeferredPrompt(e);
+    };
+
+    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+
+    window.addEventListener('appinstalled', () => {
+      setDeferredPrompt(null);
+    });
+
+    return () => {
+      window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+    };
+  }, []);
+
+  const handleInstallClick = async () => {
+    if (deferredPrompt) {
+      deferredPrompt.prompt();
+      const { outcome } = await deferredPrompt.userChoice;
+      if (outcome === 'accepted') {
+        setDeferredPrompt(null);
+      }
+    } else {
+      alert("To install DailyHealth App on your device:\n\n• For Apple iOS Safari: Tap the Share button (⎙) at the bottom and choose 'Add to Home Screen'.\n• For Android Chrome: Tap the menu (⋮) in the top-right and choose 'Install app' or 'Add to Home screen'.\n• For Desktop: Click the Install icon in the right side of the URL search bar.");
+    }
+  };
 
   // Check language preferences and theme settings
   useEffect(() => {
@@ -261,6 +292,15 @@ export default function LandingPage() {
               >
                 Learn More
               </Link>
+            </div>
+            
+            <div className="pt-3 text-left">
+              <button 
+                onClick={handleInstallClick}
+                className="px-7 py-3.5 rounded-xl border border-dashed border-slate-300 dark:border-slate-700 bg-slate-100/50 hover:bg-slate-150 dark:bg-slate-900/20 dark:hover:bg-slate-900 font-bold text-xs text-slate-655 dark:text-slate-400 flex items-center gap-2 cursor-pointer transition-all hover:scale-[1.01]"
+              >
+                <Smartphone className="w-4 h-4 text-blue-500 animate-pulse" /> Download stand-alone DailyHealth Mobile App
+              </button>
             </div>
           </div>
 
@@ -655,12 +695,20 @@ export default function LandingPage() {
         <div className="max-w-4xl mx-auto relative z-10 space-y-6">
           <h2 className="text-4xl sm:text-5xl font-black">Ready to take control of your health?</h2>
           <p className="text-blue-100 max-w-xl mx-auto text-base">Start tracking your sleep, stress, activity, and goals with AI support today.</p>
-          <Link 
-            href="/auth?tab=register"
-            className="inline-block px-9 py-4.5 bg-slate-950 text-white font-black rounded-2xl hover:bg-slate-900 hover:scale-[1.02] transform active:scale-[0.98] transition-all duration-200 text-base shadow-xl border border-slate-800"
-          >
-            Create Account
-          </Link>
+          <div className="flex flex-col gap-4.5 items-center pt-4">
+             <Link 
+               href="/auth?tab=register"
+               className="px-9 py-4.5 bg-slate-950 text-white font-black rounded-2xl hover:bg-slate-900 hover:scale-[1.02] transform active:scale-[0.98] transition-all duration-200 text-base shadow-xl border border-slate-800 w-full sm:w-auto inline-block text-center"
+             >
+               Create Account
+             </Link>
+             <button 
+               onClick={handleInstallClick}
+               className="px-9 py-4 bg-white text-slate-900 font-extrabold rounded-2xl hover:bg-slate-50 hover:scale-[1.02] transform active:scale-[0.98] transition-all duration-200 text-sm shadow-md border border-slate-200 flex items-center justify-center gap-2 cursor-pointer w-full sm:w-auto text-center"
+             >
+               <Smartphone className="w-4 h-4 text-blue-500 animate-bounce" /> Download DailyHealth App
+             </button>
+           </div>
         </div>
       </section>
 
