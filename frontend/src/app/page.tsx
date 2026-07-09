@@ -30,23 +30,33 @@ export default function LandingPage() {
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [appLang, setAppLang] = useState('en');
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
+  const [isInstalled, setIsInstalled] = useState(false);
 
   // Monitor PWA installation status
   useEffect(() => {
-    const handleBeforeInstallPrompt = (e: Event) => {
-      e.preventDefault();
-      setDeferredPrompt(e);
-    };
+    if (typeof window !== 'undefined') {
+      const isStandalone = window.matchMedia('(display-mode: standalone)').matches || 
+                           (window.navigator as any).standalone === true;
+      setIsInstalled(isStandalone);
 
-    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+      const handleBeforeInstallPrompt = (e: Event) => {
+        e.preventDefault();
+        setDeferredPrompt(e);
+      };
 
-    window.addEventListener('appinstalled', () => {
-      setDeferredPrompt(null);
-    });
+      const handleAppInstalled = () => {
+        setIsInstalled(true);
+        setDeferredPrompt(null);
+      };
 
-    return () => {
-      window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
-    };
+      window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+      window.addEventListener('appinstalled', handleAppInstalled);
+
+      return () => {
+        window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+        window.removeEventListener('appinstalled', handleAppInstalled);
+      };
+    }
   }, []);
 
   const handleInstallClick = async () => {
@@ -294,14 +304,16 @@ export default function LandingPage() {
               </Link>
             </div>
             
-            <div className="pt-3 text-left">
-              <button 
-                onClick={handleInstallClick}
-                className="px-7 py-3.5 rounded-xl border border-dashed border-slate-300 dark:border-slate-700 bg-slate-100/50 hover:bg-slate-150 dark:bg-slate-900/20 dark:hover:bg-slate-900 font-bold text-xs text-slate-655 dark:text-slate-400 flex items-center gap-2 cursor-pointer transition-all hover:scale-[1.01]"
-              >
-                <Smartphone className="w-4 h-4 text-blue-500 animate-pulse" /> Download App
-              </button>
-            </div>
+            {!isInstalled && (
+              <div className="pt-3 text-left">
+                <button 
+                  onClick={handleInstallClick}
+                  className="px-7 py-3.5 rounded-xl border border-dashed border-slate-300 dark:border-slate-700 bg-slate-100/50 hover:bg-slate-150 dark:bg-slate-900/20 dark:hover:bg-slate-900 font-bold text-xs text-slate-655 dark:text-slate-400 flex items-center gap-2 cursor-pointer transition-all hover:scale-[1.01]"
+                >
+                  <Smartphone className="w-4 h-4 text-blue-500 animate-pulse" /> Download App
+                </button>
+              </div>
+            )}
           </div>
 
           {/* Right Layout: Health Score Widget */}
@@ -702,12 +714,14 @@ export default function LandingPage() {
              >
                Create Account
              </Link>
-             <button 
-               onClick={handleInstallClick}
-               className="px-9 py-4 bg-white text-slate-900 font-extrabold rounded-2xl hover:bg-slate-50 hover:scale-[1.02] transform active:scale-[0.98] transition-all duration-200 text-sm shadow-md border border-slate-200 flex items-center justify-center gap-2 cursor-pointer w-full sm:w-auto text-center"
-             >
-               <Smartphone className="w-4 h-4 text-blue-500 animate-bounce" /> Download App
-             </button>
+             {!isInstalled && (
+               <button 
+                 onClick={handleInstallClick}
+                 className="px-9 py-4 bg-white text-slate-900 font-extrabold rounded-2xl hover:bg-slate-50 hover:scale-[1.02] transform active:scale-[0.98] transition-all duration-200 text-sm shadow-md border border-slate-200 flex items-center justify-center gap-2 cursor-pointer w-full sm:w-auto text-center"
+               >
+                 <Smartphone className="w-4 h-4 text-blue-500 animate-bounce" /> Download App
+               </button>
+             )}
            </div>
         </div>
       </section>
