@@ -2,11 +2,12 @@
 
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Heart, Activity, Moon, Droplet, Flame, Compass, Pill, ShieldAlert, 
   Award, TrendingUp, Sparkles, User, Settings, LogOut, Bell, ShieldCheck, 
-  Play, Pause, RefreshCcw, Smartphone
+  Play, Pause, RefreshCcw, Smartphone, Home
 } from 'lucide-react';
 import QuestionnaireModal from '@/components/QuestionnaireModal';
 import AnalyticsTab from '@/components/AnalyticsTab';
@@ -358,6 +359,15 @@ export default function Dashboard() {
           {/* User Details & Notifications dropdown */}
           <div className="flex items-center gap-4">
             
+            {/* Home Redirect */}
+            <Link 
+              href="/"
+              className="p-2 rounded-xl border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-900 transition-colors text-slate-650 dark:text-slate-355 cursor-pointer flex items-center justify-center"
+              title="Return to Home"
+            >
+              <Home className="w-4 h-4" />
+            </Link>
+
             {/* Theme Toggle */}
             <button 
               onClick={toggleDarkMode}
