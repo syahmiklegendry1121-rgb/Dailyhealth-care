@@ -18,12 +18,69 @@ export default function ProfileTab({ onProfileUpdate }: ProfileTabProps) {
   const [name, setName] = useState('');
   const [age, setAge] = useState('');
   const [isEditingName, setIsEditingName] = useState(false);
+  const [tempName, setTempName] = useState('');
   const fileInputRef = React.useRef<HTMLInputElement>(null);
 
   const triggerGalleryAccess = () => {
     const hasPermission = window.confirm("DailyHealth requires permission to access your photo gallery to upload a profile picture. Do you want to proceed?");
     if (hasPermission) {
       fileInputRef.current?.click();
+    }
+  };
+
+  const startEditingName = () => {
+    setTempName(name);
+    setIsEditingName(true);
+  };
+
+  const handleNameSave = async (newName: string) => {
+    if (!newName || !newName.trim()) {
+      setIsEditingName(false);
+      return;
+    }
+    const trimmed = newName.trim();
+    setName(trimmed);
+    setIsEditingName(false);
+
+    try {
+      const goalsObj = {
+        steps: Number(targetSteps),
+        water: Number(targetWater),
+        sleep: Number(targetSleep),
+        calories: Number(targetCalories),
+        bloodType,
+        allergies,
+        primaryDoctor
+      };
+
+      const payload = {
+        name: trimmed,
+        age: age ? Number(age) : null,
+        gender,
+        height: height ? Number(height) : null,
+        weight: weight ? Number(weight) : null,
+        medicalNotes,
+        goals: JSON.stringify(goalsObj),
+        emergencyContact,
+        profilePic
+      };
+
+      const res = await updateProfile(payload);
+
+      // Sync local storage user
+      const localUserStr = localStorage.getItem('dh_user');
+      if (localUserStr) {
+        const local = JSON.parse(localUserStr);
+        local.name = trimmed;
+        localStorage.setItem('dh_user', JSON.stringify(local));
+      }
+
+      setSuccess('Profile name updated in real time.');
+      if (onProfileUpdate) {
+        onProfileUpdate(res.user);
+      }
+    } catch (err: any) {
+      setError(err.message || 'Failed to update name in database.');
     }
   };
   const [gender, setGender] = useState('Male');
@@ -199,18 +256,19 @@ export default function ProfileTab({ onProfileUpdate }: ProfileTabProps) {
               <div className="flex items-center gap-2 mt-1">
                 <input 
                   type="text" 
-                  value={name} 
-                  onChange={(e) => setName(e.target.value)} 
+                  value={tempName} 
+                  onChange={(e) => setTempName(e.target.value)} 
                   className="glass-input text-xs py-1 px-2 text-center font-bold max-w-[150px] outline-none"
                   autoFocus
-                  onBlur={() => setIsEditingName(false)}
+                  onBlur={() => handleNameSave(tempName)}
                   onKeyDown={(e) => {
-                    if (e.key === 'Enter') setIsEditingName(false);
+                    if (e.key === 'Enter') handleNameSave(tempName);
+                    if (e.key === 'Escape') setIsEditingName(false);
                   }}
                 />
                 <button 
                   type="button" 
-                  onClick={() => setIsEditingName(false)}
+                  onClick={() => handleNameSave(tempName)}
                   className="p-1 hover:bg-slate-100 dark:hover:bg-slate-800 rounded text-slate-500 cursor-pointer"
                 >
                   <Check className="w-3.5 h-3.5 text-emerald-500" />
@@ -221,7 +279,7 @@ export default function ProfileTab({ onProfileUpdate }: ProfileTabProps) {
                 <h4 className="font-bold text-slate-900 dark:text-white text-sm">{name}</h4>
                 <button 
                   type="button" 
-                  onClick={() => setIsEditingName(true)}
+                  onClick={startEditingName}
                   className="p-1 hover:bg-slate-100 dark:hover:bg-slate-800 rounded text-slate-400 hover:text-blue-500 transition-colors cursor-pointer"
                   title="Edit Name"
                 >
