@@ -1,8 +1,71 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { User, ShieldAlert, Award, RefreshCw, FileText, Upload, HeartHandshake, Edit2, Check } from 'lucide-react';
+import { User, ShieldAlert, Award, RefreshCw, FileText, Upload, HeartHandshake, Edit2, Check, Plus, Camera } from 'lucide-react';
 import { getProfile, updateProfile } from '@/utils/api';
+
+const AVATAR_TEMPLATES = [
+  {
+    id: 'av_1',
+    name: 'Teal Female with Glasses',
+    svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><linearGradient id="g1" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#2dd4bf"/><stop offset="100%" stop-color="#14b8a6"/></linearGradient></defs><circle cx="50" cy="50" r="50" fill="url(#g1)"/><path d="M22,92 C22,74 34,64 50,64 C66,64 78,74 78,92" fill="#cbd5e1"/><circle cx="50" cy="42" r="18" fill="#fed7aa"/><path d="M30,38 C30,22 42,20 50,20 C58,20 70,22 70,38 C70,44 68,46 68,48 C65,42 55,42 50,45 C45,42 35,42 32,48 C32,46 30,44 30,38 Z" fill="#1e293b"/><circle cx="44" cy="42" r="2" fill="#1e293b"/><circle cx="56" cy="42" r="2" fill="#1e293b"/><path d="M41,40 L47,40 M53,40 L59,40 M47,42 C47,38 41,38 41,42 M59,42 C59,38 53,38 53,42" stroke="#1e293b" stroke-width="1.5" fill="none"/><path d="M47,41 L53,41" stroke="#1e293b" stroke-width="1"/><path d="M45,49 Q50,53 55,49" stroke="#1e293b" stroke-width="2" stroke-linecap="round" fill="none"/></svg>`
+  },
+  {
+    id: 'av_2',
+    name: 'Blue Bearded Male',
+    svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><linearGradient id="g2" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#3b82f6"/><stop offset="100%" stop-color="#1d4ed8"/></linearGradient></defs><circle cx="50" cy="50" r="50" fill="url(#g2)"/><path d="M22,92 C22,74 34,64 50,64 C66,64 78,74 78,92" fill="#e2e8f0"/><circle cx="50" cy="42" r="18" fill="#ffedd5"/><path d="M32,32 Q50,16 68,32 C74,38 72,42 66,40 C60,38 40,38 34,40 C28,42 26,38 32,32 Z" fill="#475569"/><path d="M32,42 C32,54 40,62 50,62 C60,62 68,54 68,42 C68,42 62,45 50,45 C38,45 32,42 32,42 Z" fill="#475569"/><circle cx="43" cy="40" r="2" fill="#1e293b"/><circle cx="57" cy="40" r="2" fill="#1e293b"/><path d="M46,48 Q50,51 54,48" stroke="#ffedd5" stroke-width="2" stroke-linecap="round" fill="none"/></svg>`
+  },
+  {
+    id: 'av_3',
+    name: 'Emerald Active Female',
+    svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><linearGradient id="g3" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#10b981"/><stop offset="100%" stop-color="#047857"/></linearGradient></defs><circle cx="50" cy="50" r="50" fill="url(#g3)"/><path d="M22,92 C22,74 34,64 50,64 C66,64 78,74 78,92" fill="#f1f5f9"/><circle cx="50" cy="42" r="18" fill="#fde047"/><path d="M32,30 C32,18 68,18 68,30 C68,36 64,46 64,48 C56,44 44,44 36,48 C36,46 32,36 32,30 Z" fill="#b45309"/><circle cx="44" cy="40" r="2" fill="#1e293b"/><circle cx="56" cy="40" r="2" fill="#1e293b"/><path d="M46,47 Q50,51 54,47" stroke="#1e293b" stroke-width="2" stroke-linecap="round" fill="none"/></svg>`
+  },
+  {
+    id: 'av_4',
+    name: 'Purple Senior Female',
+    svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><linearGradient id="g4" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#8b5cf6"/><stop offset="100%" stop-color="#6d28d9"/></linearGradient></defs><circle cx="50" cy="50" r="50" fill="url(#g4)"/><path d="M22,92 C22,74 34,64 50,64 C66,64 78,74 78,92" fill="#e2e8f0"/><circle cx="50" cy="42" r="18" fill="#fbcfe8"/><path d="M30,35 C30,22 40,16 50,16 C60,16 70,22 70,35 C70,42 66,42 66,44 C60,38 40,38 34,44 C34,42 30,42 30,35 Z" fill="#94a3b8"/><circle cx="43" cy="41" r="2" fill="#1e293b"/><circle cx="57" cy="41" r="2" fill="#1e293b"/><path d="M45,48 Q50,51 55,48" stroke="#1e293b" stroke-width="1.8" stroke-linecap="round" fill="none"/></svg>`
+  },
+  {
+    id: 'av_5',
+    name: 'Indigo Athletic Male',
+    svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><linearGradient id="g5" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#6366f1"/><stop offset="100%" stop-color="#4338ca"/></linearGradient></defs><circle cx="50" cy="50" r="50" fill="url(#g5)"/><path d="M22,92 C22,74 34,64 50,64 C66,64 78,74 78,92" fill="#f8fafc"/><circle cx="50" cy="42" r="18" fill="#ffedd5"/><path d="M32,32 L68,32 L64,24 L36,24 Z" fill="#0f172a"/><path d="M34,24 Q50,22 66,24 L72,28 L64,32 Z" fill="#f43f5e"/><circle cx="44" cy="41" r="2" fill="#1e293b"/><circle cx="56" cy="41" r="2" fill="#1e293b"/><path d="M46,48 Q50,51 54,48" stroke="#1e293b" stroke-width="2" stroke-linecap="round" fill="none"/></svg>`
+  },
+  {
+    id: 'av_6',
+    name: 'Orange Hijab Female',
+    svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><linearGradient id="g6" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#f97316"/><stop offset="100%" stop-color="#c2410c"/></linearGradient></defs><circle cx="50" cy="50" r="50" fill="url(#g6)"/><path d="M20,92 C20,70 30,60 50,60 C70,60 80,70 80,92" fill="#cbd5e1"/><path d="M30,30 C30,16 70,16 70,30 C70,52 64,68 50,68 C36,68 30,52 30,30 Z" fill="#475569"/><ellipse cx="50" cy="40" rx="14" ry="17" fill="#fed7aa"/><circle cx="44" cy="38" r="2" fill="#1e293b"/><circle cx="56" cy="38" r="2" fill="#1e293b"/><path d="M45,46 Q50,50 55,46" stroke="#1e293b" stroke-width="2" stroke-linecap="round" fill="none"/></svg>`
+  },
+  {
+    id: 'av_7',
+    name: 'Pink Short Hair Gender-Neutral',
+    svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><linearGradient id="g7" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#ec4899"/><stop offset="100%" stop-color="#be185d"/></linearGradient></defs><circle cx="50" cy="50" r="50" fill="url(#g7)"/><path d="M22,92 C22,74 34,64 50,64 C66,64 78,74 78,92" fill="#e2e8f0"/><circle cx="50" cy="42" r="18" fill="#f59e0b"/><path d="M32,32 C32,22 40,20 50,20 C60,20 68,22 68,32 C68,34 62,32 50,32 C38,32 32,34 32,32 Z" fill="#1e293b"/><circle cx="44" cy="41" r="2" fill="#1e293b"/><circle cx="56" cy="41" r="2" fill="#1e293b"/><path d="M46,47 Q50,50 54,47" stroke="#1e293b" stroke-width="2" stroke-linecap="round" fill="none"/></svg>`
+  },
+  {
+    id: 'av_8',
+    name: 'Sky Curly Hair Female',
+    svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><linearGradient id="g8" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#0ea5e9"/><stop offset="100%" stop-color="#0369a1"/></linearGradient></defs><circle cx="50" cy="50" r="50" fill="url(#g8)"/><path d="M22,92 C22,74 34,64 50,64 C66,64 78,74 78,92" fill="#f8fafc"/><circle cx="48" cy="28" r="12" fill="#78350f"/><circle cx="36" cy="34" r="10" fill="#78350f"/><circle cx="64" cy="34" r="10" fill="#78350f"/><circle cx="50" cy="42" r="18" fill="#f59e0b"/><circle cx="44" cy="41" r="2" fill="#1e293b"/><circle cx="56" cy="41" r="2" fill="#1e293b"/><path d="M46,47 Q50,51 54,47" stroke="#1e293b" stroke-width="2" stroke-linecap="round" fill="none"/></svg>`
+  },
+  {
+    id: 'av_9',
+    name: 'Amber Senior Male',
+    svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><linearGradient id="g9" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#f59e0b"/><stop offset="100%" stop-color="#b45309"/></linearGradient></defs><circle cx="50" cy="50" r="50" fill="url(#g9)"/><path d="M22,92 C22,74 34,64 50,64 C66,64 78,74 78,92" fill="#e2e8f0"/><circle cx="50" cy="42" r="18" fill="#fed7aa"/><path d="M34,30 C34,22 40,18 50,18 C60,18 66,22 66,30 Z" fill="#e2e8f0"/><circle cx="43" cy="40" r="2" fill="#1e293b"/><circle cx="57" cy="40" r="2" fill="#1e293b"/><path d="M40,39 L46,39 M54,39 L60,39" stroke="#1e293b" stroke-width="1.5"/><path d="M46,47 Q50,50 54,47" stroke="#1e293b" stroke-width="1.8" stroke-linecap="round" fill="none"/></svg>`
+  },
+  {
+    id: 'av_10',
+    name: 'Cyan Beanie Gender-Neutral',
+    svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><linearGradient id="g10" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#06b6d4"/><stop offset="100%" stop-color="#0891b2"/></linearGradient></defs><circle cx="50" cy="50" r="50" fill="url(#g10)"/><path d="M22,92 C22,74 34,64 50,64 C66,64 78,74 78,92" fill="#f1f5f9"/><circle cx="50" cy="42" r="18" fill="#fde047"/><path d="M30,30 Q50,12 70,30 L66,36 L34,36 Z" fill="#64748b"/><circle cx="44" cy="41" r="2" fill="#1e293b"/><circle cx="56" cy="41" r="2" fill="#1e293b"/><path d="M46,47 Q50,50 54,47" stroke="#1e293b" stroke-width="2" stroke-linecap="round" fill="none"/></svg>`
+  },
+  {
+    id: 'av_11',
+    name: 'Rose Ponytail Female',
+    svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><linearGradient id="g11" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#f43f5e"/><stop offset="100%" stop-color="#be123c"/></linearGradient></defs><circle cx="50" cy="50" r="50" fill="url(#g11)"/><path d="M22,92 C22,74 34,64 50,64 C66,64 78,74 78,92" fill="#cbd5e1"/><path d="M56,36 Q78,32 72,50 L64,44 Z" fill="#d97706"/><circle cx="50" cy="42" r="18" fill="#ffedd5"/><path d="M32,32 C32,20 44,18 50,18 C56,18 68,20 68,32 C68,36 60,34 50,34 C40,34 32,36 32,32 Z" fill="#d97706"/><circle cx="44" cy="41" r="2" fill="#1e293b"/><circle cx="56" cy="41" r="2" fill="#1e293b"/><path d="M46,47 Q50,50 54,47" stroke="#1e293b" stroke-width="2" stroke-linecap="round" fill="none"/></svg>`
+  },
+  {
+    id: 'av_12',
+    name: 'Fuchsia Afro Male',
+    svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><linearGradient id="g12" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#d946ef"/><stop offset="100%" stop-color="#a21caf"/></linearGradient></defs><circle cx="50" cy="50" r="50" fill="url(#g12)"/><path d="M22,92 C22,74 34,64 50,64 C66,64 78,74 78,92" fill="#e2e8f0"/><circle cx="36" cy="30" r="10" fill="#1e293b"/><circle cx="44" cy="24" r="11" fill="#1e293b"/><circle cx="56" cy="24" r="11" fill="#1e293b"/><circle cx="64" cy="30" r="10" fill="#1e293b"/><circle cx="50" cy="42" r="18" fill="#d97706"/><circle cx="44" cy="41" r="2" fill="#1e293b"/><circle cx="56" cy="41" r="2" fill="#1e293b"/><path d="M46,47 Q50,50 54,47" stroke="#1e293b" stroke-width="2" stroke-linecap="round" fill="none"/></svg>`
+  }
+];
 
 interface ProfileTabProps {
   onProfileUpdate?: (updatedUser: any) => void;
@@ -154,10 +217,55 @@ export default function ProfileTab({ onProfileUpdate }: ProfileTabProps) {
     const reader = new FileReader();
     reader.onloadend = () => {
       if (typeof reader.result === 'string') {
-        setProfilePic(reader.result);
+        handleAvatarSave(reader.result);
       }
     };
     reader.readAsDataURL(file);
+  };
+
+  const handleAvatarSave = async (imgUri: string) => {
+    setProfilePic(imgUri);
+
+    try {
+      const goalsObj = {
+        steps: Number(targetSteps),
+        water: Number(targetWater),
+        sleep: Number(targetSleep),
+        calories: Number(targetCalories),
+        bloodType,
+        allergies,
+        primaryDoctor
+      };
+
+      const payload = {
+        name,
+        age: age ? Number(age) : null,
+        gender,
+        height: height ? Number(height) : null,
+        weight: weight ? Number(weight) : null,
+        medicalNotes,
+        goals: JSON.stringify(goalsObj),
+        emergencyContact,
+        profilePic: imgUri
+      };
+
+      const res = await updateProfile(payload);
+
+      // Sync local storage user
+      const localUserStr = localStorage.getItem('dh_user');
+      if (localUserStr) {
+        const local = JSON.parse(localUserStr);
+        local.profilePic = imgUri;
+        localStorage.setItem('dh_user', JSON.stringify(local));
+      }
+
+      setSuccess('Profile avatar updated in real time.');
+      if (onProfileUpdate) {
+        onProfileUpdate(res.user);
+      }
+    } catch (err: any) {
+      setError(err.message || 'Failed to update avatar in database.');
+    }
   };
 
   const handleSave = async (e: React.FormEvent) => {
@@ -289,15 +397,55 @@ export default function ProfileTab({ onProfileUpdate }: ProfileTabProps) {
             )}
             <p className="text-3xs text-slate-450 mt-0.5">Physical profile editor</p>
             
-            {/* User Gallery Upload DP Button */}
-            <button 
-              type="button"
-              onClick={triggerGalleryAccess}
-              className="w-full mt-4 flex items-center justify-center gap-1.5 py-2.5 border border-dashed border-slate-300 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-850 rounded-xl cursor-pointer text-2xs font-extrabold text-slate-600 dark:text-slate-350 transition-colors"
-            >
-              <Upload className="w-3.5 h-3.5 text-blue-500" />
-              <span>Choose from Gallery</span>
-            </button>
+            {/* Modern Avatar Selection Grid System */}
+            <div className="w-full mt-6 space-y-3.5 border-t border-slate-100 dark:border-slate-800 pt-5 text-left">
+              <div>
+                <span className="font-extrabold text-slate-950 dark:text-white text-2xs tracking-wide uppercase">Select Avatar</span>
+                <p className="text-3xs text-slate-400 mt-0.5">Choose an illustration or upload a custom photo</p>
+              </div>
+
+              <div className="grid grid-cols-4 gap-3">
+                {AVATAR_TEMPLATES.map((avatar) => {
+                  const dataUri = `data:image/svg+xml;utf8,${encodeURIComponent(avatar.svg)}`;
+                  const isSelected = profilePic === dataUri;
+                  
+                  return (
+                    <button
+                      key={avatar.id}
+                      type="button"
+                      onClick={() => handleAvatarSave(dataUri)}
+                      className={`relative aspect-square rounded-full overflow-hidden border-2 cursor-pointer transition-all hover:scale-105 duration-200 ${
+                        isSelected 
+                          ? 'border-blue-500 shadow-md shadow-blue-500/20 ring-2 ring-blue-500/10' 
+                          : 'border-slate-200 dark:border-slate-800 hover:border-slate-350 dark:hover:border-slate-700'
+                      }`}
+                      title={avatar.name}
+                    >
+                      <div dangerouslySetInnerHTML={{ __html: avatar.svg }} className="w-full h-full" />
+                      {isSelected && (
+                        <div className="absolute inset-0 bg-blue-500/10 flex items-center justify-center">
+                          <div className="bg-blue-500 text-white rounded-full p-0.5 shadow-sm">
+                            <Check className="w-2.5 h-2.5 stroke-[3]" />
+                          </div>
+                        </div>
+                      )}
+                    </button>
+                  );
+                })}
+
+                {/* Custom Gallery Upload Slot */}
+                <button
+                  type="button"
+                  onClick={triggerGalleryAccess}
+                  className="relative aspect-square rounded-full border-2 border-dashed border-slate-300 dark:border-slate-700 hover:border-slate-450 dark:hover:border-slate-500 flex flex-col items-center justify-center cursor-pointer transition-all hover:scale-105 bg-slate-50/50 dark:bg-slate-950/20 group"
+                  title="Upload custom picture"
+                >
+                  <Plus className="w-4 h-4 text-slate-400 group-hover:text-blue-500 transition-colors" />
+                  <span className="text-[7px] text-slate-450 font-extrabold uppercase mt-0.5">Custom</span>
+                </button>
+              </div>
+            </div>
+
             <input 
               type="file" 
               ref={fileInputRef}
