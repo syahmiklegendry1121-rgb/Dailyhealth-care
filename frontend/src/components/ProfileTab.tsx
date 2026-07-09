@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { User, ShieldAlert, Award, RefreshCw, FileText, Upload, HeartHandshake } from 'lucide-react';
+import { User, ShieldAlert, Award, RefreshCw, FileText, Upload, HeartHandshake, Edit2, Check } from 'lucide-react';
 import { getProfile, updateProfile } from '@/utils/api';
 
 interface ProfileTabProps {
@@ -17,6 +17,15 @@ export default function ProfileTab({ onProfileUpdate }: ProfileTabProps) {
   // Form fields
   const [name, setName] = useState('');
   const [age, setAge] = useState('');
+  const [isEditingName, setIsEditingName] = useState(false);
+  const fileInputRef = React.useRef<HTMLInputElement>(null);
+
+  const triggerGalleryAccess = () => {
+    const hasPermission = window.confirm("DailyHealth requires permission to access your photo gallery to upload a profile picture. Do you want to proceed?");
+    if (hasPermission) {
+      fileInputRef.current?.click();
+    }
+  };
   const [gender, setGender] = useState('Male');
   const [height, setHeight] = useState('');
   const [weight, setWeight] = useState('');
@@ -186,20 +195,58 @@ export default function ProfileTab({ onProfileUpdate }: ProfileTabProps) {
               )}
             </div>
             
-            <h4 className="font-bold text-slate-900 dark:text-white text-sm">{name}</h4>
+            {isEditingName ? (
+              <div className="flex items-center gap-2 mt-1">
+                <input 
+                  type="text" 
+                  value={name} 
+                  onChange={(e) => setName(e.target.value)} 
+                  className="glass-input text-xs py-1 px-2 text-center font-bold max-w-[150px] outline-none"
+                  autoFocus
+                  onBlur={() => setIsEditingName(false)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') setIsEditingName(false);
+                  }}
+                />
+                <button 
+                  type="button" 
+                  onClick={() => setIsEditingName(false)}
+                  className="p-1 hover:bg-slate-100 dark:hover:bg-slate-800 rounded text-slate-500 cursor-pointer"
+                >
+                  <Check className="w-3.5 h-3.5 text-emerald-500" />
+                </button>
+              </div>
+            ) : (
+              <div className="flex items-center gap-1.5 justify-center mt-1">
+                <h4 className="font-bold text-slate-900 dark:text-white text-sm">{name}</h4>
+                <button 
+                  type="button" 
+                  onClick={() => setIsEditingName(true)}
+                  className="p-1 hover:bg-slate-100 dark:hover:bg-slate-800 rounded text-slate-400 hover:text-blue-500 transition-colors cursor-pointer"
+                  title="Edit Name"
+                >
+                  <Edit2 className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            )}
             <p className="text-3xs text-slate-450 mt-0.5">Physical profile editor</p>
             
             {/* User Gallery Upload DP Button */}
-            <label className="w-full mt-4 flex items-center justify-center gap-1.5 py-2.5 border border-dashed border-slate-300 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-850 rounded-xl cursor-pointer text-2xs font-extrabold text-slate-600 dark:text-slate-350 transition-colors">
+            <button 
+              type="button"
+              onClick={triggerGalleryAccess}
+              className="w-full mt-4 flex items-center justify-center gap-1.5 py-2.5 border border-dashed border-slate-300 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-850 rounded-xl cursor-pointer text-2xs font-extrabold text-slate-600 dark:text-slate-350 transition-colors"
+            >
               <Upload className="w-3.5 h-3.5 text-blue-500" />
               <span>Choose from Gallery</span>
-              <input 
-                type="file" 
-                accept="image/*" 
-                onChange={handleImageUpload} 
-                className="hidden" 
-              />
-            </label>
+            </button>
+            <input 
+              type="file" 
+              ref={fileInputRef}
+              accept="image/*" 
+              onChange={handleImageUpload} 
+              className="hidden" 
+            />
 
           </div>
 
