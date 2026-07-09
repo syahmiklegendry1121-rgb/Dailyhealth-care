@@ -299,7 +299,7 @@ export default function LandingPage() {
                 onClick={handleInstallClick}
                 className="px-7 py-3.5 rounded-xl border border-dashed border-slate-300 dark:border-slate-700 bg-slate-100/50 hover:bg-slate-150 dark:bg-slate-900/20 dark:hover:bg-slate-900 font-bold text-xs text-slate-655 dark:text-slate-400 flex items-center gap-2 cursor-pointer transition-all hover:scale-[1.01]"
               >
-                <Smartphone className="w-4 h-4 text-blue-500 animate-pulse" /> Download stand-alone DailyHealth Mobile App
+                <Smartphone className="w-4 h-4 text-blue-500 animate-pulse" /> Download App
               </button>
             </div>
           </div>
@@ -706,7 +706,7 @@ export default function LandingPage() {
                onClick={handleInstallClick}
                className="px-9 py-4 bg-white text-slate-900 font-extrabold rounded-2xl hover:bg-slate-50 hover:scale-[1.02] transform active:scale-[0.98] transition-all duration-200 text-sm shadow-md border border-slate-200 flex items-center justify-center gap-2 cursor-pointer w-full sm:w-auto text-center"
              >
-               <Smartphone className="w-4 h-4 text-blue-500 animate-bounce" /> Download DailyHealth App
+               <Smartphone className="w-4 h-4 text-blue-500 animate-bounce" /> Download App
              </button>
            </div>
         </div>
