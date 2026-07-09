@@ -23,6 +23,7 @@ export default function SettingsTab({ onLanguageChange }: SettingsTabProps) {
   // Settings state
   const [darkMode, setDarkMode] = useState(false);
   const [language, setLanguage] = useState('en');
+  const [luxuryMono, setLuxuryMono] = useState(false);
   const [privacySettings, setPrivacySettings] = useState('private');
   const [notificationSettings, setNotificationSettings] = useState('all');
 
@@ -43,6 +44,9 @@ export default function SettingsTab({ onLanguageChange }: SettingsTabProps) {
       setLanguage(s.language || 'en');
       setPrivacySettings(s.privacySettings || 'private');
       setNotificationSettings(s.notificationSettings || 'all');
+      
+      const isMono = localStorage.getItem('theme_luxury_mono') === 'true';
+      setLuxuryMono(isMono);
     } catch (err: any) {
       console.error(err);
       setError(err.message || 'Failed to retrieve application settings.');
@@ -280,6 +284,19 @@ export default function SettingsTab({ onLanguageChange }: SettingsTabProps) {
     }
   };
 
+  const toggleLuxuryMono = (val: boolean) => {
+    setLuxuryMono(val);
+    if (typeof window !== 'undefined') {
+      if (val) {
+        document.documentElement.classList.add('luxury-monochromatic');
+        localStorage.setItem('theme_luxury_mono', 'true');
+      } else {
+        document.documentElement.classList.remove('luxury-monochromatic');
+        localStorage.setItem('theme_luxury_mono', 'false');
+      }
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center p-12 text-slate-400">
@@ -331,6 +348,21 @@ export default function SettingsTab({ onLanguageChange }: SettingsTabProps) {
                 className="text-slate-650 hover:scale-105 transition-transform"
               >
                 {darkMode ? <ToggleRight className="w-9 h-9 text-blue-500 fill-current" /> : <ToggleLeft className="w-9 h-9 text-slate-350" />}
+              </button>
+            </div>
+
+            {/* Luxurious Monochromatic Theme toggle */}
+            <div className="flex justify-between items-center py-2 border-b border-slate-100 dark:border-slate-800">
+              <div>
+                <span className="font-bold text-xs text-slate-900 dark:text-white">Luxurious Monochromatic Mode</span>
+                <p className="text-3xs text-slate-400">Apply a premium high-contrast monochromatic overlay</p>
+              </div>
+              <button 
+                type="button"
+                onClick={() => toggleLuxuryMono(!luxuryMono)}
+                className="text-slate-650 hover:scale-105 transition-transform"
+              >
+                {luxuryMono ? <ToggleRight className="w-9 h-9 text-blue-500 fill-current" /> : <ToggleLeft className="w-9 h-9 text-slate-350" />}
               </button>
             </div>
 

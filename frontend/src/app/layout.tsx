@@ -46,6 +46,13 @@ export default function RootLayout({
                   } else {
                     document.documentElement.classList.remove('dark');
                   }
+                  
+                  var mono = localStorage.getItem('theme_luxury_mono');
+                  if (mono === 'true') {
+                    document.documentElement.classList.add('luxury-monochromatic');
+                  } else {
+                    document.documentElement.classList.remove('luxury-monochromatic');
+                  }
                 } catch (e) {}
               })();
             `
