@@ -167,3 +167,61 @@ body {
 .dark.luxury-monochromatic {
   filter: grayscale(100%) contrast(120%) brightness(95%) !important;
 }
+
+/* Glassmorphism overrides for buttons, anchors, and inputs when Monochromatic Mode is active */
+.luxury-monochromatic button,
+.luxury-monochromatic a,
+.luxury-monochromatic input,
+.luxury-monochromatic select,
+.luxury-monochromatic textarea,
+.luxury-monochromatic [role="button"],
+.luxury-monochromatic .glass-panel {
+  background: rgba(255, 255, 255, 0.45) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+  border: 1.5px solid rgba(0, 0, 0, 0.15) !important;
+  color: #000000 !important;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05) !important;
+}
+
+/* For buttons and links inside dark mode, make text white/light gray with dark frosted glass */
+.dark.luxury-monochromatic button,
+.dark.luxury-monochromatic a,
+.dark.luxury-monochromatic input,
+.dark.luxury-monochromatic select,
+.dark.luxury-monochromatic textarea,
+.dark.luxury-monochromatic [role="button"],
+.dark.luxury-monochromatic .glass-panel {
+  background: rgba(15, 23, 42, 0.55) !important;
+  backdrop-filter: blur(18px) !important;
+  -webkit-backdrop-filter: blur(18px) !important;
+  border: 1.5px solid rgba(255, 255, 255, 0.12) !important;
+  color: #ffffff !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* Keep button icons monochromatic and legible */
+.luxury-monochromatic svg {
+  stroke: currentColor !important;
+}
+
+/* Subtle scale hover micro-animations on these glass buttons */
+.luxury-monochromatic button:hover,
+.luxury-monochromatic a:hover,
+.luxury-monochromatic [role="button"]:hover {
+  background: rgba(255, 255, 255, 0.65) !important;
+  border-color: rgba(0, 0, 0, 0.25) !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1) !important;
+  transform: translateY(-1px) scale(1.01);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.dark.luxury-monochromatic button:hover,
+.dark.luxury-monochromatic a:hover,
+.dark.luxury-monochromatic [role="button"]:hover {
+  background: rgba(15, 23, 42, 0.75) !important;
+  border-color: rgba(255, 255, 255, 0.25) !important;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5) !important;
+  transform: translateY(-1px) scale(1.01);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
