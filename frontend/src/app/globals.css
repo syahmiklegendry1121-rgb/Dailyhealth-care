@@ -160,68 +160,132 @@ body {
   box-shadow: none !important;
 }
 
-/* Monochromatic Luxury styling filter */
+/* iOS 26 Liquid Glass Effects and Color Overrides */
 .luxury-monochromatic {
-  filter: grayscale(100%) contrast(110%) brightness(105%) !important;
-  background: #111111 !important;
-  color: #F5F5F5 !important;
-  transition: background-color 0.5s ease, filter 0.5s ease !important;
-}
-.dark.luxury-monochromatic {
-  filter: grayscale(100%) contrast(115%) brightness(95%) !important;
-  background: #111111 !important;
-  color: #F5F5F5 !important;
+  background: #000000 !important;
+  background-color: #000000 !important;
+  color: #ffffff !important;
+  transition: background-color 0.5s ease !important;
 }
 
-/* Frosted glass container overlays */
-.luxury-monochromatic .glass-panel,
-.luxury-monochromatic main,
-.luxury-monochromatic header,
-.luxury-monochromatic card,
-.luxury-monochromatic .bg-white,
-.luxury-monochromatic .dark\:bg-slate-900 {
-  background: rgba(255, 255, 255, 0.08) !important;
-  backdrop-filter: blur(30px) !important;
-  -webkit-backdrop-filter: blur(30px) !important;
+.luxury-monochromatic::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  background: radial-gradient(circle at 50% -20%, #1a1a2e 0%, #000000 70%);
+  pointer-events: none;
+}
+
+/* Header blur blending */
+.luxury-monochromatic header {
+  background: rgba(0, 0, 0, 0.45) !important;
+  backdrop-filter: blur(40px) !important;
+  -webkit-backdrop-filter: blur(40px) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5) !important;
+}
+
+/* Navigation button frosted styling */
+.luxury-monochromatic nav button {
+  background: transparent !important;
+  border: 1px solid transparent !important;
+  color: #B0B0B0 !important;
+  box-shadow: none !important;
+}
+
+.luxury-monochromatic nav button[class*="bg-white"],
+.luxury-monochromatic nav button[class*="dark:bg-slate-800"] {
+  background: rgba(255, 255, 255, 0.15) !important;
+  backdrop-filter: blur(20px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.25) !important;
+  color: #ffffff !important;
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.2) !important;
+}
+
+/* Welcome Card (Gold/Green/Indigo/Black Liquid Flow) */
+.luxury-monochromatic .lg\:col-span-2.bg-gradient-to-br {
+  background: linear-gradient(135deg, #1d976c 0%, #302b63 50%, #0f0c20 100%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35) !important;
+}
+
+/* Health Score Card (Crimson/Rust/Orange Liquid Glow) */
+.luxury-monochromatic .grid-cols-1.lg\:grid-cols-3 > div:nth-child(2),
+.luxury-monochromatic main > div:nth-child(2) > div:nth-child(2) {
+  background: linear-gradient(135deg, #870000 0%, #190a05 60%, #000000 100%) !important;
   border: 1px solid rgba(255, 255, 255, 0.18) !important;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.15), inset 0 1px 1px rgba(255,255,255,0.3) !important;
-  color: #F5F5F5 !important;
-  border-radius: 24px !important;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35) !important;
 }
 
-/* Glassmorphism overrides for buttons, anchors, and inputs when Monochromatic Mode is active */
-.luxury-monochromatic button,
-.luxury-monochromatic a,
-.luxury-monochromatic input,
-.luxury-monochromatic select,
-.luxury-monochromatic textarea,
-.luxury-monochromatic [role="button"] {
+/* Pedometer Sensor Widget (Teal/Deep Sea Glow) */
+.luxury-monochromatic .p-6.rounded-\[28px\] {
+  background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2) !important;
+}
+
+/* Inner Pedometer stats block styled as frosted glass container */
+.luxury-monochromatic .p-6.rounded-\[28px\] > div:first-child {
   background: rgba(255, 255, 255, 0.08) !important;
+  backdrop-filter: blur(25px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  border-radius: 20px;
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.2) !important;
+  padding: 16px !important;
+}
+
+/* Indicators grid card liquid colors matching iOS 26 weather/clock widgets */
+/* Grid Card 1: Sleep (Midnight Blue Glow) */
+.luxury-monochromatic .grid-cols-1.sm\:grid-cols-2.lg\:grid-cols-3 > div:nth-child(1) {
+  background: linear-gradient(135deg, #1f4068 0%, #162447 60%, #1a1a2e 100%) !important;
+}
+
+/* Grid Card 2: Stress (Sunset Orange/Violet Glow) */
+.luxury-monochromatic .grid-cols-1.sm\:grid-cols-2.lg\:grid-cols-3 > div:nth-child(2) {
+  background: linear-gradient(135deg, #4b1248 0%, #f0c27b 100%) !important;
+}
+
+/* Grid Card 3: Water (Turquoise Aqua Glow) */
+.luxury-monochromatic .grid-cols-1.sm\:grid-cols-2.lg\:grid-cols-3 > div:nth-child(3) {
+  background: linear-gradient(135deg, #00c9ff 0%, #92fe9d 100%) !important;
+}
+
+/* Grid Card 4: Heart Rate (Blood Crimson Glow) */
+.luxury-monochromatic .grid-cols-1.sm\:grid-cols-2.lg\:grid-cols-3 > div:nth-child(4) {
+  background: linear-gradient(135deg, #f857a6 0%, #ff5858 100%) !important;
+}
+
+/* Grid Card 5: Blood Pressure (Emerald Sage Glow) */
+.luxury-monochromatic .grid-cols-1.sm\:grid-cols-2.lg\:grid-cols-3 > div:nth-child(5) {
+  background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%) !important;
+}
+
+/* Grid Card 6: Blood Sugar (Bright Amber/Rust Glow) */
+.luxury-monochromatic .grid-cols-1.sm\:grid-cols-2.lg\:grid-cols-3 > div:nth-child(6) {
+  background: linear-gradient(135deg, #ff9900 0%, #ff5b00 100%) !important;
+}
+
+/* Apply unified Apple liquid glass panel styling for card overlays */
+.luxury-monochromatic .grid-cols-1.sm\:grid-cols-2.lg\:grid-cols-3 > div {
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3) !important;
+  border-radius: 24px !important;
+  transition: transform 0.3s ease !important;
+}
+
+/* Inner elements and badges become frosted glass pill buttons */
+.luxury-monochromatic .grid-cols-1.sm\:grid-cols-2.lg\:grid-cols-3 > div .rounded-xl,
+.luxury-monochromatic .grid-cols-1.sm\:grid-cols-2.lg\:grid-cols-3 > div .rounded-2xl {
+  background: rgba(255, 255, 255, 0.14) !important;
   backdrop-filter: blur(20px) !important;
   -webkit-backdrop-filter: blur(20px) !important;
-  border: 1px solid rgba(255, 255, 255, 0.15) !important;
-  color: #F5F5F5 !important;
+  border: 1px solid rgba(255, 255, 255, 0.25) !important;
+  color: #ffffff !important;
   box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.2) !important;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
 }
 
-/* Keep button icons monochromatic and legible */
-.luxury-monochromatic svg {
-  stroke: currentColor !important;
-}
-
-/* Subtle scale hover micro-animations on these glass buttons */
-.luxury-monochromatic button:hover,
-.luxury-monochromatic a:hover,
-.luxury-monochromatic [role="button"]:hover {
-  background: rgba(255, 255, 255, 0.15) !important;
-  border: 1px solid rgba(255, 255, 255, 0.3) !important;
-  box-shadow: 0 4px 15px rgba(255, 255, 255, 0.1), inset 0 1px 1px rgba(255, 255, 255, 0.3) !important;
-  transform: translateY(-1.5px) scale(1.015);
-}
-
-/* Typography styles */
+/* Unified text coloring inside liquid containers */
 .luxury-monochromatic text,
 .luxury-monochromatic span,
 .luxury-monochromatic p,
@@ -232,13 +296,38 @@ body {
 .luxury-monochromatic h5,
 .luxury-monochromatic h6,
 .luxury-monochromatic label {
-  color: #F5F5F5 !important;
+  color: #ffffff !important;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
 }
 
 .luxury-monochromatic .text-slate-400,
 .luxury-monochromatic .text-slate-500,
 .luxury-monochromatic .text-slate-450 {
-  color: #B0B0B0 !important;
+  color: rgba(255, 255, 255, 0.7) !important;
+}
+
+/* Apple buttons styled as translucent glass tabs */
+.luxury-monochromatic button,
+.luxury-monochromatic input,
+.luxury-monochromatic select,
+.luxury-monochromatic textarea,
+.luxury-monochromatic [role="button"] {
+  background: rgba(255, 255, 255, 0.1) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  color: #ffffff !important;
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.2) !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.luxury-monochromatic button:hover,
+.luxury-monochromatic select:hover,
+.luxury-monochromatic [role="button"]:hover {
+  background: rgba(255, 255, 255, 0.2) !important;
+  border: 1px solid rgba(255, 255, 255, 0.35) !important;
+  box-shadow: 0 4px 15px rgba(255, 255, 255, 0.15), inset 0 1px 1px rgba(255, 255, 255, 0.3) !important;
+  transform: translateY(-1px);
 }
 
 /* Floating and Shine Animations */
