@@ -257,12 +257,15 @@ function AuthFormContent() {
             <div className="relative">
               <User className="absolute left-3 top-3.5 w-4 h-4 text-slate-400" />
               <input
+                id="name"
+                name="name"
                 type="text"
                 placeholder="John Doe"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 className="w-full pl-10 pr-4 py-3 text-sm glass-input"
                 disabled={loading}
+                autoComplete="name"
               />
             </div>
           </div>
@@ -273,12 +276,15 @@ function AuthFormContent() {
           <div className="relative">
             <Mail className="absolute left-3 top-3.5 w-4 h-4 text-slate-400" />
             <input
+              id="email"
+              name="email"
               type="email"
               placeholder="john@health.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="w-full pl-10 pr-4 py-3 text-sm glass-input"
               disabled={loading}
+              autoComplete="username email"
             />
           </div>
         </div>
@@ -288,12 +294,15 @@ function AuthFormContent() {
           <div className="relative">
             <Lock className="absolute left-3 top-3.5 w-4 h-4 text-slate-400" />
             <input
+              id="password"
+              name="password"
               type={showPassword ? 'text' : 'password'}
               placeholder="••••••••"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="w-full pl-10 pr-10 py-3 text-sm glass-input"
               disabled={loading}
+              autoComplete={activeTab === 'login' ? 'current-password' : 'new-password'}
             />
             <button
               type="button"
@@ -311,12 +320,15 @@ function AuthFormContent() {
             <div className="relative">
               <Lock className="absolute left-3 top-3.5 w-4 h-4 text-slate-400" />
               <input
+                id="confirm-password"
+                name="confirm-password"
                 type={showConfirmPassword ? 'text' : 'password'}
                 placeholder="••••••••"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 className="w-full pl-10 pr-10 py-3 text-sm glass-input"
                 disabled={loading}
+                autoComplete="new-password"
               />
               <button
                 type="button"
