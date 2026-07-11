@@ -888,7 +888,16 @@ export default function Dashboard() {
         )}
 
         {/* SETTINGS TAB */}
-        {activeTab === 'settings' && <SettingsTab onLanguageChange={(lang) => setAppLanguage(lang)} />}
+        {activeTab === 'settings' && (
+          <SettingsTab 
+            onLanguageChange={(lang) => setAppLanguage(lang)} 
+            onSettingsUpdate={(field, val) => {
+              if (field === 'darkMode') {
+                setIsDarkMode(val);
+              }
+            }}
+          />
+        )}
 
         {/* ADMIN TAB */}
         {activeTab === 'admin' && user?.role === 'ADMIN' && <AdminTab />}

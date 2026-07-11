@@ -11,9 +11,10 @@ import {
 
 interface SettingsTabProps {
   onLanguageChange?: (lang: string) => void;
+  onSettingsUpdate?: (field: string, val: any) => void;
 }
 
-export default function SettingsTab({ onLanguageChange }: SettingsTabProps) {
+export default function SettingsTab({ onLanguageChange, onSettingsUpdate }: SettingsTabProps) {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -92,6 +93,10 @@ export default function SettingsTab({ onLanguageChange }: SettingsTabProps) {
     } else if (field === 'notificationSettings') {
       updatedNotifs = val;
       setNotificationSettings(val);
+    }
+
+    if (onSettingsUpdate) {
+      onSettingsUpdate(field, val);
     }
 
     try {
@@ -292,9 +297,15 @@ export default function SettingsTab({ onLanguageChange }: SettingsTabProps) {
         localStorage.setItem('theme_luxury_mono', 'true');
         // Force dark mode theme
         handleUpdateSettings('darkMode', true);
+        if (onSettingsUpdate) {
+          onSettingsUpdate('luxuryMono', true);
+        }
       } else {
         document.documentElement.classList.remove('luxury-monochromatic');
         localStorage.setItem('theme_luxury_mono', 'false');
+        if (onSettingsUpdate) {
+          onSettingsUpdate('luxuryMono', false);
+        }
       }
     }
   };
