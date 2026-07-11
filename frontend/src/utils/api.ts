@@ -1,5 +1,26 @@
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
 
+// Global Fetch Interceptor to clean up stale localStorage on session/database reset
+if (typeof window !== 'undefined' && !(window as any).__fetchPatched) {
+  const originalFetch = window.fetch;
+  window.fetch = async function (...args) {
+    const res = await originalFetch(...args);
+    try {
+      const clone = res.clone();
+      const data = await clone.json();
+      if (!res.ok) {
+        if (res.status === 401 || (res.status === 404 && data.error === 'User profile not found.')) {
+          localStorage.removeItem('dh_token');
+          localStorage.removeItem('dh_user');
+          window.location.href = '/auth';
+        }
+      }
+    } catch (e) {}
+    return res;
+  };
+  (window as any).__fetchPatched = true;
+}
+
 function getAuthHeaders(): HeadersInit {
   if (typeof window === 'undefined') return {};
   const token = localStorage.getItem('dh_token');
