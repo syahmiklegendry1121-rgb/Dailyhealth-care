@@ -166,6 +166,7 @@ body {
   background-color: #080b11 !important;
   color: #ffffff !important;
   transition: background-color 0.5s ease !important;
+  color-scheme: dark !important; /* Forces native OS scrollbars and popups to dark theme */
 }
 
 /* Beautiful vivid backlight radial glow blobs showing through the glass */
@@ -235,6 +236,14 @@ body {
   box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.08) !important;
   border-radius: 20px !important; /* Clean rounded edges */
   transition: all 0.3s ease !important;
+  color-scheme: dark !important; /* Forces Chrome dropdown option list popups to dark mode */
+}
+
+/* Specific styling for select option elements under monochromatic theme */
+.luxury-monochromatic select option,
+.luxury-monochromatic option {
+  background-color: #121826 !important;
+  color: #ffffff !important;
 }
 
 /* Premium Apple Navigation bar */
