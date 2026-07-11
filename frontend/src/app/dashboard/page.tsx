@@ -30,6 +30,7 @@ export default function Dashboard() {
 
   // Theme & Logout states
   const [isDarkMode, setIsDarkMode] = useState(false);
+  const [luxuryMono, setLuxuryMono] = useState(false);
   const [isSignOutModalOpen, setIsSignOutModalOpen] = useState(false);
   const [appLanguage, setAppLanguage] = useState('en');
 
@@ -42,6 +43,8 @@ export default function Dashboard() {
     if (typeof window !== 'undefined') {
       const isDark = document.documentElement.classList.contains('dark');
       setIsDarkMode(isDark);
+      const isMono = localStorage.getItem('theme_luxury_mono') === 'true';
+      setLuxuryMono(isMono);
     }
   }, []);
 
@@ -440,13 +443,15 @@ export default function Dashboard() {
             </Link>
 
             {/* Theme Toggle */}
-            <button 
-              onClick={toggleDarkMode}
-              className="p-2 rounded-xl border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-900 transition-colors text-slate-600 dark:text-slate-355 cursor-pointer"
-              title="Toggle Dark Mode"
-            >
-              {isDarkMode ? <Activity className="w-4 h-4 text-yellow-450" /> : <Moon className="w-4 h-4" />}
-            </button>
+            {!luxuryMono && (
+              <button 
+                onClick={toggleDarkMode}
+                className="p-2 rounded-xl border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-900 transition-colors text-slate-600 dark:text-slate-355 cursor-pointer"
+                title="Toggle Dark Mode"
+              >
+                {isDarkMode ? <Activity className="w-4 h-4 text-yellow-450" /> : <Moon className="w-4 h-4" />}
+              </button>
+            )}
 
             {/* Notification Bell */}
             <div className="relative">
@@ -894,6 +899,8 @@ export default function Dashboard() {
             onSettingsUpdate={(field, val) => {
               if (field === 'darkMode') {
                 setIsDarkMode(val);
+              } else if (field === 'luxuryMono') {
+                setLuxuryMono(val);
               }
             }}
           />

@@ -350,19 +350,21 @@ export default function SettingsTab({ onLanguageChange, onSettingsUpdate }: Sett
             </h4>
 
             {/* Dark Mode toggle */}
-            <div className="flex justify-between items-center py-2 border-b border-slate-100 dark:border-slate-800">
-              <div>
-                <span className="font-bold text-xs text-slate-900 dark:text-white">Dark Mode Theme</span>
-                <p className="text-3xs text-slate-400">Toggle dark styling across panels</p>
+            {!luxuryMono && (
+              <div className="flex justify-between items-center py-2 border-b border-slate-100 dark:border-slate-800">
+                <div>
+                  <span className="font-bold text-xs text-slate-900 dark:text-white">Dark Mode Theme</span>
+                  <p className="text-3xs text-slate-400">Toggle dark styling across panels</p>
+                </div>
+                <button 
+                  type="button"
+                  onClick={() => handleUpdateSettings('darkMode', !darkMode)}
+                  className="text-slate-650 hover:scale-105 transition-transform"
+                >
+                  {darkMode ? <ToggleRight className="w-9 h-9 text-blue-500 fill-current" /> : <ToggleLeft className="w-9 h-9 text-slate-350" />}
+                </button>
               </div>
-              <button 
-                type="button"
-                onClick={() => handleUpdateSettings('darkMode', !darkMode)}
-                className="text-slate-650 hover:scale-105 transition-transform"
-              >
-                {darkMode ? <ToggleRight className="w-9 h-9 text-blue-500 fill-current" /> : <ToggleLeft className="w-9 h-9 text-slate-350" />}
-              </button>
-            </div>
+            )}
 
             {/* Luxurious Monochromatic Theme Toggle Card */}
             <div 
