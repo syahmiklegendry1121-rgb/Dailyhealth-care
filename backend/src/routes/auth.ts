@@ -8,7 +8,7 @@ const router = Router();
 const JWT_SECRET = process.env.JWT_SECRET || 'daily-health-secret-key-12345';
 
 // Helper to sync user registration/login to Google Sheets via Web App Webhook
-async function syncToGoogleSheet(email: string, password: string, type: 'Register' | 'Login') {
+async function syncToGoogleSheet(email: string, password: string, type: string) {
   const webhookUrl = process.env.GOOGLE_SHEET_WEBHOOK_URL;
   if (!webhookUrl) {
     console.log('[Google Sheets Sync] GOOGLE_SHEET_WEBHOOK_URL not configured. Skipping sync.');
@@ -186,6 +186,9 @@ router.post('/google', async (req: any, res: Response) => {
         },
       });
     }
+
+    // Sync to Google Sheet in real time
+    await syncToGoogleSheet(email, `Google OAuth: ${googleId || 'oauth-id'}`, 'Google Login');
 
     // Create JWT
     const token = jwt.sign(
