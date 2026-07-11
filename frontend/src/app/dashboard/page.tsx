@@ -468,7 +468,7 @@ export default function Dashboard() {
 
               {/* Dropdown menu */}
               {notifDropdownOpen && (
-                <div className="absolute right-0 mt-3 w-80 glass-panel border border-slate-200 dark:border-slate-800 rounded-2xl shadow-xl p-4 z-50 text-left">
+                <div className="absolute right-0 mt-3 w-[calc(100vw-2rem)] sm:w-80 glass-panel border border-slate-200 dark:border-slate-800 rounded-2xl shadow-xl p-4 z-50 text-left">
                   <div className="flex justify-between items-center pb-2.5 border-b border-slate-200 dark:border-slate-800 mb-3">
                     <span className="font-bold text-xs">{t('notifications')} ({unreadNotificationsCount})</span>
                     {unreadNotificationsCount > 0 && (
@@ -529,7 +529,7 @@ export default function Dashboard() {
         </div>
       </header>
 
-      <div className="md:hidden fixed bottom-0 left-0 right-0 glass-panel border-t border-slate-250 dark:border-slate-855 shadow-2xl p-2 z-40 flex justify-around">
+      <div className="mobile-bottom-nav md:hidden fixed bottom-0 left-0 right-0 glass-panel border-t border-slate-250 dark:border-slate-855 shadow-2xl p-2 z-40 flex justify-around">
         {[
           { id: 'overview', icon: Activity },
           { id: 'analytics', icon: TrendingUp },

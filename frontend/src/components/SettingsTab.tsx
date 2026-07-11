@@ -359,7 +359,7 @@ export default function SettingsTab({ onLanguageChange, onSettingsUpdate }: Sett
                 <button 
                   type="button"
                   onClick={() => handleUpdateSettings('darkMode', !darkMode)}
-                  className="text-slate-650 hover:scale-105 transition-transform"
+                  className="toggle-icon-button text-slate-650 hover:scale-105 transition-transform"
                 >
                   {darkMode ? <ToggleRight className="w-9 h-9 text-blue-500 fill-current" /> : <ToggleLeft className="w-9 h-9 text-slate-350" />}
                 </button>
@@ -402,7 +402,7 @@ export default function SettingsTab({ onLanguageChange, onSettingsUpdate }: Sett
                 <button
                   type="button"
                   onClick={() => toggleLuxuryMono(!luxuryMono)}
-                  className={`relative w-14 h-7 rounded-full p-0.5 transition-all duration-300 ease-in-out cursor-pointer flex items-center select-none border
+                  className={`toggle-switch-track relative w-14 h-7 rounded-full p-0.5 transition-all duration-300 ease-in-out cursor-pointer flex items-center select-none border
                     ${luxuryMono 
                       ? 'bg-white/25 border-white/40 shadow-[0_0_12px_rgba(255,255,255,0.4)]' 
                       : 'bg-black/20 dark:bg-white/5 border-slate-300 dark:border-white/10'

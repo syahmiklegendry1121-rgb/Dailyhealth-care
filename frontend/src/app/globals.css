@@ -464,3 +464,53 @@ body {
   background: transparent !important;
   box-shadow: none !important;
 }
+
+/* Reset button styling overrides for custom switch tracks */
+.luxury-monochromatic button.toggle-switch-track {
+  padding: 0.125rem !important; /* p-0.5 override */
+  background: rgba(0, 0, 0, 0.2) !important; /* bg-black/20 fallback */
+  border-radius: 9999px !important;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.4) !important;
+  width: 3.5rem !important; /* w-14 override */
+  height: 1.75rem !important; /* h-7 override */
+}
+
+.luxury-monochromatic button.toggle-switch-track:hover {
+  transform: none !important;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.4) !important;
+}
+
+/* Reset button styling overrides for settings icon toggles */
+.luxury-monochromatic button.toggle-icon-button {
+  padding: 0 !important;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  width: auto !important;
+  height: auto !important;
+}
+
+.luxury-monochromatic button.toggle-icon-button:hover {
+  transform: scale(1.05) !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+/* Reset mobile bottom navigation bar options to their standard visual layout */
+.luxury-monochromatic .mobile-bottom-nav button {
+  background: transparent !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border: none !important;
+  box-shadow: none !important;
+  border-radius: 8px !important;
+  padding: 4px 12px !important;
+  width: auto !important;
+  height: auto !important;
+  transition: all 0.2s ease !important;
+}
+
+.luxury-monochromatic .mobile-bottom-nav button:hover {
+  background: rgba(255, 255, 255, 0.08) !important;
+  transform: none !important;
+}
