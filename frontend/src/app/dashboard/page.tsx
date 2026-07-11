@@ -404,7 +404,7 @@ export default function Dashboard() {
               { id: 'overview', icon: Activity },
               { id: 'analytics', icon: TrendingUp },
               { id: 'insights', icon: Sparkles },
-              { id: 'profile', icon: User },
+              { id: 'settings', icon: Settings },
             ].map(tab => (
               <button
                 key={tab.id}
@@ -494,9 +494,9 @@ export default function Dashboard() {
             </div>
 
             <div 
-              onClick={() => setActiveTab('settings')}
+              onClick={() => setActiveTab('profile')}
               className="flex items-center gap-2.5 pl-3 border-l border-slate-250 dark:border-slate-850 cursor-pointer hover:opacity-80 transition-all select-none group"
-              title="Open Settings"
+              title="Open Profile"
             >
               <div className="w-8.5 h-8.5 rounded-full overflow-hidden bg-blue-500/10 flex items-center justify-center border border-blue-500/20 text-blue-500 font-extrabold text-sm uppercase group-hover:scale-105 transition-transform">
                 {user?.profilePic ? (
@@ -528,7 +528,7 @@ export default function Dashboard() {
           { id: 'overview', icon: Activity },
           { id: 'analytics', icon: TrendingUp },
           { id: 'insights', icon: Sparkles },
-          { id: 'profile', icon: User },
+          { id: 'settings', icon: Settings },
         ].map(tab => (
           <button
             key={tab.id}
