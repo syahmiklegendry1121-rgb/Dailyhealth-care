@@ -112,9 +112,14 @@ function AuthFormContent() {
         throw new Error('Google Identity Services SDK not loaded yet. Retrying...');
       }
 
+      const googleClientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
+      if (!googleClientId || googleClientId.startsWith('PASTE_')) {
+        throw new Error('Google OAuth Client ID is not configured. Please paste your Google Client ID inside frontend/.env to activate live OAuth.');
+      }
+
       // Initialize the popup account picker client
       const client = (window as any).google.accounts.oauth2.initTokenClient({
-        client_id: '359301931558-8u6u4bph626k2s3f3j0d15e2195f190e.apps.googleusercontent.com', // Google App Client ID
+        client_id: googleClientId,
         scope: 'email profile openid',
         callback: async (tokenResponse: any) => {
           if (tokenResponse?.access_token) {
