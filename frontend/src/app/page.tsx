@@ -245,6 +245,7 @@ export default function LandingPage() {
             <button 
               onClick={toggleDarkMode}
               className="p-2.5 rounded-lg border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300"
+              aria-label="Toggle Dark Mode"
             >
               {isDarkMode ? <Activity className="w-4.5 h-4.5 text-yellow-400" /> : <Moon className="w-4.5 h-4.5" />}
             </button>

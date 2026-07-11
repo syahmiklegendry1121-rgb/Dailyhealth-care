@@ -448,6 +448,7 @@ export default function Dashboard() {
                 onClick={toggleDarkMode}
                 className="p-2 rounded-xl border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-900 transition-colors text-slate-600 dark:text-slate-355 cursor-pointer"
                 title="Toggle Dark Mode"
+                aria-label="Toggle Dark Mode"
               >
                 {isDarkMode ? <Activity className="w-4 h-4 text-yellow-450" /> : <Moon className="w-4 h-4" />}
               </button>

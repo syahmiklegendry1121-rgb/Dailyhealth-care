@@ -347,8 +347,9 @@ body {
   animation: shine-glow 2.5s ease-out infinite;
 }
 
-/* Hide theme toggle pulse symbol button in header when monochromatic mode is active */
-.luxury-monochromatic button[title="Toggle Dark Mode"] {
+/* Hide theme toggle pulse symbol button in header and home page when monochromatic mode is active */
+.luxury-monochromatic button[title="Toggle Dark Mode"],
+.luxury-monochromatic button[aria-label="Toggle Dark Mode"] {
   display: none !important;
   visibility: hidden !important;
   opacity: 0 !important;
