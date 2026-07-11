@@ -498,8 +498,12 @@ export default function Dashboard() {
               className="flex items-center gap-2.5 pl-3 border-l border-slate-250 dark:border-slate-850 cursor-pointer hover:opacity-80 transition-all select-none group"
               title="Open Settings"
             >
-              <div className="w-8.5 h-8.5 rounded-full bg-blue-500/10 flex items-center justify-center border border-blue-500/20 text-blue-500 font-extrabold text-sm uppercase group-hover:scale-105 transition-transform">
-                {user?.name?.slice(0, 2)}
+              <div className="w-8.5 h-8.5 rounded-full overflow-hidden bg-blue-500/10 flex items-center justify-center border border-blue-500/20 text-blue-500 font-extrabold text-sm uppercase group-hover:scale-105 transition-transform">
+                {user?.profilePic ? (
+                  <img src={user.profilePic} alt="Avatar" className="w-full h-full object-cover" />
+                ) : (
+                  user?.name?.slice(0, 2)
+                )}
               </div>
               <div className="hidden lg:flex flex-col text-left">
                 <span className="text-xs font-bold text-slate-900 dark:text-white leading-none group-hover:text-blue-500 transition-colors">{user?.name}</span>
