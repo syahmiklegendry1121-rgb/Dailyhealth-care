@@ -162,10 +162,32 @@ body {
 
 /* Monochromatic Luxury styling filter */
 .luxury-monochromatic {
-  filter: grayscale(100%) contrast(115%) brightness(105%) !important;
+  filter: grayscale(100%) contrast(110%) brightness(105%) !important;
+  background: #111111 !important;
+  color: #F5F5F5 !important;
+  transition: background-color 0.5s ease, filter 0.5s ease !important;
 }
 .dark.luxury-monochromatic {
-  filter: grayscale(100%) contrast(120%) brightness(95%) !important;
+  filter: grayscale(100%) contrast(115%) brightness(95%) !important;
+  background: #111111 !important;
+  color: #F5F5F5 !important;
+}
+
+/* Frosted glass container overlays */
+.luxury-monochromatic .glass-panel,
+.luxury-monochromatic main,
+.luxury-monochromatic header,
+.luxury-monochromatic card,
+.luxury-monochromatic .bg-white,
+.luxury-monochromatic .dark\:bg-slate-900 {
+  background: rgba(255, 255, 255, 0.08) !important;
+  backdrop-filter: blur(30px) !important;
+  -webkit-backdrop-filter: blur(30px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.18) !important;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.15), inset 0 1px 1px rgba(255,255,255,0.3) !important;
+  color: #F5F5F5 !important;
+  border-radius: 24px !important;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
 }
 
 /* Glassmorphism overrides for buttons, anchors, and inputs when Monochromatic Mode is active */
@@ -174,30 +196,14 @@ body {
 .luxury-monochromatic input,
 .luxury-monochromatic select,
 .luxury-monochromatic textarea,
-.luxury-monochromatic [role="button"],
-.luxury-monochromatic .glass-panel {
-  background: rgba(255, 255, 255, 0.45) !important;
-  backdrop-filter: blur(16px) !important;
-  -webkit-backdrop-filter: blur(16px) !important;
-  border: 1.5px solid rgba(0, 0, 0, 0.15) !important;
-  color: #000000 !important;
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05) !important;
-}
-
-/* For buttons and links inside dark mode, make text white/light gray with dark frosted glass */
-.dark.luxury-monochromatic button,
-.dark.luxury-monochromatic a,
-.dark.luxury-monochromatic input,
-.dark.luxury-monochromatic select,
-.dark.luxury-monochromatic textarea,
-.dark.luxury-monochromatic [role="button"],
-.dark.luxury-monochromatic .glass-panel {
-  background: rgba(15, 23, 42, 0.55) !important;
-  backdrop-filter: blur(18px) !important;
-  -webkit-backdrop-filter: blur(18px) !important;
-  border: 1.5px solid rgba(255, 255, 255, 0.12) !important;
-  color: #ffffff !important;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3) !important;
+.luxury-monochromatic [role="button"] {
+  background: rgba(255, 255, 255, 0.08) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  color: #F5F5F5 !important;
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.2) !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
 }
 
 /* Keep button icons monochromatic and legible */
@@ -209,19 +215,45 @@ body {
 .luxury-monochromatic button:hover,
 .luxury-monochromatic a:hover,
 .luxury-monochromatic [role="button"]:hover {
-  background: rgba(255, 255, 255, 0.65) !important;
-  border-color: rgba(0, 0, 0, 0.25) !important;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1) !important;
-  transform: translateY(-1px) scale(1.01);
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  background: rgba(255, 255, 255, 0.15) !important;
+  border: 1px solid rgba(255, 255, 255, 0.3) !important;
+  box-shadow: 0 4px 15px rgba(255, 255, 255, 0.1), inset 0 1px 1px rgba(255, 255, 255, 0.3) !important;
+  transform: translateY(-1.5px) scale(1.015);
 }
 
-.dark.luxury-monochromatic button:hover,
-.dark.luxury-monochromatic a:hover,
-.dark.luxury-monochromatic [role="button"]:hover {
-  background: rgba(15, 23, 42, 0.75) !important;
-  border-color: rgba(255, 255, 255, 0.25) !important;
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5) !important;
-  transform: translateY(-1px) scale(1.01);
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+/* Typography styles */
+.luxury-monochromatic text,
+.luxury-monochromatic span,
+.luxury-monochromatic p,
+.luxury-monochromatic h1,
+.luxury-monochromatic h2,
+.luxury-monochromatic h3,
+.luxury-monochromatic h4,
+.luxury-monochromatic h5,
+.luxury-monochromatic h6,
+.luxury-monochromatic label {
+  color: #F5F5F5 !important;
+}
+
+.luxury-monochromatic .text-slate-400,
+.luxury-monochromatic .text-slate-500,
+.luxury-monochromatic .text-slate-450 {
+  color: #B0B0B0 !important;
+}
+
+/* Floating and Shine Animations */
+@keyframes float-gentle {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-3px); }
+}
+.animate-float-glass {
+  animation: float-gentle 4s ease-in-out infinite;
+}
+
+@keyframes shine-glow {
+  0% { transform: translate(-150%) skewX(-20deg); }
+  100% { transform: translate(150%) skewX(-20deg); }
+}
+.animate-shine-glow {
+  animation: shine-glow 2.5s ease-out infinite;
 }

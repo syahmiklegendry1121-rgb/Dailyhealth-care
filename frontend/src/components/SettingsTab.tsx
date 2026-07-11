@@ -351,19 +351,79 @@ export default function SettingsTab({ onLanguageChange }: SettingsTabProps) {
               </button>
             </div>
 
-            {/* Luxurious Monochromatic Theme toggle */}
-            <div className="flex justify-between items-center py-2 border-b border-slate-100 dark:border-slate-800">
-              <div>
-                <span className="font-bold text-xs text-slate-900 dark:text-white">Luxurious Monochromatic Mode</span>
-                <p className="text-3xs text-slate-400">Apply a premium high-contrast monochromatic overlay</p>
+            {/* Luxurious Monochromatic Theme Toggle Card */}
+            <div 
+              className={`p-6 rounded-[24px] flex justify-between items-center relative overflow-hidden transition-all duration-300 animate-float-glass mb-4
+                ${luxuryMono 
+                  ? 'bg-black/90 border-white/20' 
+                  : 'bg-white/10 dark:bg-white/5 border-slate-200 dark:border-slate-800'
+                }
+              `}
+              style={{
+                backdropFilter: 'blur(30px)',
+                WebkitBackdropFilter: 'blur(30px)',
+                borderWidth: '1px',
+                boxShadow: '0 8px 32px rgba(0,0,0,0.15), inset 0 1px 1px rgba(255,255,255,0.3)',
+              }}
+            >
+              {/* Card shine overlay */}
+              <div 
+                className="absolute inset-0 opacity-20 pointer-events-none"
+                style={{
+                  background: 'linear-gradient(135deg, rgba(255,255,255,0.35), rgba(255,255,255,0.05))',
+                }}
+              />
+              
+              <div className="z-10 text-left">
+                <span className={`font-bold text-xs transition-colors duration-300 ${luxuryMono ? 'text-[#F5F5F5]' : 'text-slate-900 dark:text-white'}`}>
+                  Luxurious Monochromatic Mode
+                </span>
+                <p className={`text-3xs transition-colors duration-300 mt-1 ${luxuryMono ? 'text-[#B0B0B0]' : 'text-slate-450'}`}>
+                  Apply a premium high-contrast monochromatic overlay with macOS glassmorphism styling
+                </p>
               </div>
-              <button 
-                type="button"
-                onClick={() => toggleLuxuryMono(!luxuryMono)}
-                className="text-slate-650 hover:scale-105 transition-transform"
-              >
-                {luxuryMono ? <ToggleRight className="w-9 h-9 text-blue-500 fill-current" /> : <ToggleLeft className="w-9 h-9 text-slate-350" />}
-              </button>
+
+              <div className="z-10">
+                <button
+                  type="button"
+                  onClick={() => toggleLuxuryMono(!luxuryMono)}
+                  className={`relative w-14 h-7 rounded-full p-0.5 transition-all duration-300 ease-in-out cursor-pointer flex items-center select-none border
+                    ${luxuryMono 
+                      ? 'bg-white/25 border-white/40 shadow-[0_0_12px_rgba(255,255,255,0.4)]' 
+                      : 'bg-black/20 dark:bg-white/5 border-slate-300 dark:border-white/10'
+                    }
+                  `}
+                  style={{
+                    backdropFilter: 'blur(30px)',
+                    WebkitBackdropFilter: 'blur(30px)',
+                  }}
+                >
+                  {/* Toggle shine layer */}
+                  <div 
+                    className="absolute inset-0 rounded-full opacity-60 pointer-events-none"
+                    style={{
+                      background: 'linear-gradient(135deg, rgba(255,255,255,0.35), rgba(255,255,255,0.05))',
+                    }}
+                  />
+
+                  {/* Slider pill */}
+                  <div
+                    className={`w-5 h-5 rounded-full transition-all duration-300 ease-out relative overflow-hidden flex items-center justify-center
+                      ${luxuryMono ? 'translate-x-7 bg-white/95 shadow-[0_1px_6px_rgba(255,255,255,0.8)]' : 'translate-x-0.5 bg-slate-400 dark:bg-white/30'}
+                    `}
+                    style={{
+                      backdropFilter: 'blur(10px)',
+                      WebkitBackdropFilter: 'blur(10px)',
+                      boxShadow: 'inset 0 1px 2px rgba(255,255,255,0.5), 0 1px 3px rgba(0,0,0,0.2)',
+                    }}
+                  >
+                    {/* Reflective highlight line */}
+                    {luxuryMono && (
+                      <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/70 to-transparent transform -skew-x-20 animate-shine-glow" />
+                    )}
+                  </div>
+                </button>
+              </div>
             </div>
 
             {/* Language Selection */}
