@@ -70,9 +70,23 @@ export default function Dashboard() {
 
   // Sensor state
   const [sensorPermission, setSensorPermission] = useState<'prompt' | 'granted' | 'denied'>('prompt');
-  const [sensorData, setSensorData] = useState({ steps: 0, distance: 0.0, calories: 0, activeMinutes: 0, speed: 0.0 });
+  const [sensorData, setSensorData] = useState<any>({
+    steps: 0,
+    distance: 0.0,
+    calories: 0,
+    cadence: 0,
+    activeMinutes: 0,
+    walkingSpeed: 0.0,
+    strideLength: 0.7,
+    lastStepTime: 0,
+    sensorAccuracy: 'Medium',
+    sensorPermission: 'prompt',
+    dailyGoalProgress: 0
+  });
   const [sensorSyncing, setSensorSyncing] = useState(false);
   const [sensorActive, setSensorActive] = useState(false);
+  const [lastSyncTime, setLastSyncTime] = useState<string | null>(null);
+  const wakeLockRef = React.useRef<any>(null);
 
   // Notification state
   const [notifications, setNotifications] = useState<any[]>([]);
@@ -184,13 +198,23 @@ export default function Dashboard() {
     return () => clearInterval(syncInterval);
   }, [token]);
 
+  // Auto-resume step counting on reopen if previously active
+  useEffect(() => {
+    if (user && typeof window !== 'undefined') {
+      const isAutoActive = localStorage.getItem('sensor_active') === 'true';
+      if (isAutoActive && !sensorActive) {
+        handleEnableSensors();
+      }
+    }
+  }, [user]);
+
   // Manual & Auto sensor syncing
   const handleSyncSensor = async () => {
     if (!token) return;
     setSensorSyncing(true);
     try {
       const todayStr = new Date().toISOString().split('T')[0];
-      const currentSensor = sensorDataRef.current;
+      const currentSensor = sensorManager.getCurrentData();
       await syncMobileSteps({
         date: todayStr,
         count: currentSensor.steps,
@@ -199,6 +223,7 @@ export default function Dashboard() {
         caloriesBurned: currentSensor.calories,
       });
       
+      setLastSyncTime(new Date().toLocaleTimeString());
       // Refresh logs & charts
       await fetchDashboardData();
     } catch (err) {
@@ -210,17 +235,43 @@ export default function Dashboard() {
 
   // Enable smart mobile sensors
   const handleEnableSensors = async () => {
+    let userHeight = 175;
+    let userWeight = 70;
+    let stepsGoal = 10000;
+
+    if (user) {
+      if (user.height) userHeight = Number(user.height);
+      if (user.weight) userWeight = Number(user.weight);
+      if (user.goals) {
+        try {
+          const parsed = JSON.parse(user.goals);
+          if (parsed.steps) stepsGoal = Number(parsed.steps);
+        } catch (e) {}
+      }
+    }
+
     try {
-      const granted = await sensorManager.requestPermission();
+      const granted = await sensorManager.requestPermission(userHeight, userWeight, stepsGoal);
       if (granted) {
         setSensorPermission('granted');
         setSensorActive(true);
+        localStorage.setItem('sensor_active', 'true');
+
+        // Request Wake Lock if supported
+        try {
+          if ('wakeLock' in navigator) {
+            wakeLockRef.current = await (navigator as any).wakeLock.request('screen');
+          }
+        } catch (wlErr) {
+          console.warn('Wake Lock request failed:', wlErr);
+        }
+
         // Push notification of active sensor
         setNotifications(prev => [
           {
-            id: 'sensor-activated',
-            title: 'Mobile Pedometer Active',
-            message: 'Simulated Google Fit / Apple HealthKit sync is running in the background.',
+            id: 'sensor-activated-' + Date.now(),
+            title: 'Pedometer Sensor Activated',
+            message: 'Professional cadence-validated step counting is running in background.',
             type: 'info',
             read: false,
             createdAt: new Date().toISOString()
@@ -238,10 +289,22 @@ export default function Dashboard() {
   const handleDisableSensors = () => {
     sensorManager.stop();
     setSensorActive(false);
+    localStorage.removeItem('sensor_active');
+
+    // Release Wake Lock
+    if (wakeLockRef.current) {
+      try {
+        wakeLockRef.current.release();
+        wakeLockRef.current = null;
+      } catch (err) {
+        console.warn('Wake lock release error:', err);
+      }
+    }
+
     setNotifications(prev => [
       {
         id: 'sensor-deactivated-' + Date.now(),
-        title: 'Mobile Pedometer Deactivated',
+        title: 'Pedometer Deactivated',
         message: 'Step counting and sensor synchronization have been paused.',
         type: 'info',
         read: false,
@@ -677,27 +740,85 @@ export default function Dashboard() {
             </div>
 
             {/* SENSOR STATUS PANEL */}
-            {sensorPermission === 'granted' && (
-              <div className="p-6 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-md text-left flex flex-col sm:flex-row items-center justify-between gap-4">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-blue-500/10 text-blue-500 flex items-center justify-center">
-                    <Smartphone className="w-5 h-5 animate-pulse" />
+            {sensorPermission === 'granted' && sensorActive && (
+              <div className="p-6 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-md text-left flex flex-col lg:flex-row items-center justify-between gap-6">
+                
+                {/* Left: Progress Ring */}
+                <div className="flex items-center gap-5 w-full lg:w-auto">
+                  <div className="relative w-18 h-18 flex-shrink-0 flex items-center justify-center">
+                    <svg className="w-full h-full transform -rotate-90">
+                      <circle cx="36" cy="36" r="30" className="stroke-slate-100 dark:stroke-slate-850 fill-transparent" strokeWidth="5.5" />
+                      <circle cx="36" cy="36" r="30" className="stroke-blue-500 transition-all duration-300 fill-transparent" strokeWidth="5.5"
+                              strokeDasharray={2 * Math.PI * 30}
+                              strokeDashoffset={2 * Math.PI * 30 - (Math.min(sensorData.dailyGoalProgress, 100) / 100) * (2 * Math.PI * 30)}
+                              strokeLinecap="round" />
+                    </svg>
+                    <div className="absolute flex flex-col items-center justify-center">
+                      <span className="text-2xs font-black text-slate-900 dark:text-white">{sensorData.dailyGoalProgress}%</span>
+                      <span className="text-[7px] text-slate-400 uppercase font-bold">Goal</span>
+                    </div>
                   </div>
                   <div>
-                    <h4 className="font-bold text-sm text-slate-950 dark:text-white">Live Browser Pedometer Activated</h4>
-                    <p className="text-3xs text-slate-450">Accelerometer (DeviceMotion API) reads. Shake device to simulate steps!</p>
+                    <h4 className="font-extrabold text-sm text-slate-950 dark:text-white flex items-center gap-2">
+                      Live Smart Pedometer Active
+                      <span className={`px-2 py-0.5 rounded-full text-[8px] font-black uppercase ${
+                        sensorData.sensorAccuracy === 'High' 
+                          ? 'bg-emerald-500/10 text-emerald-500' 
+                          : sensorData.sensorAccuracy === 'Medium' 
+                          ? 'bg-amber-500/10 text-amber-505' 
+                          : 'bg-red-500/10 text-red-500'
+                      }`}>
+                        Accuracy: {sensorData.sensorAccuracy}
+                      </span>
+                    </h4>
+                    <p className="text-3xs text-slate-450 mt-1 max-w-sm">
+                      Cadence-validated, anti-shake step counting synced in background.
+                    </p>
+                    <p className="text-[9px] text-slate-400 font-bold mt-1.5 flex items-center gap-1">
+                      <span>Auto-saving every 10s.</span>
+                      {lastSyncTime ? (
+                        <span className="text-blue-500">Last sync: {lastSyncTime}</span>
+                      ) : (
+                        <span className="text-slate-450">Pending initial sync</span>
+                      )}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Center: Analytics Grid */}
+                <div className="grid grid-cols-3 sm:grid-cols-6 gap-3.5 w-full lg:w-auto border-t lg:border-t-0 lg:border-l border-slate-100 dark:border-slate-800/80 pt-4 lg:pt-0 lg:pl-6">
+                  <div className="text-center sm:text-left min-w-[70px]">
+                    <span className="text-[9px] font-bold text-slate-400 uppercase block">Steps</span>
+                    <span className="text-xs font-black text-slate-950 dark:text-white">{sensorData.steps.toLocaleString()}</span>
+                  </div>
+                  <div className="text-center sm:text-left min-w-[70px]">
+                    <span className="text-[9px] font-bold text-slate-400 uppercase block">Distance</span>
+                    <span className="text-xs font-black text-slate-950 dark:text-white">{sensorData.distance} km</span>
+                  </div>
+                  <div className="text-center sm:text-left min-w-[70px]">
+                    <span className="text-[9px] font-bold text-slate-400 uppercase block">Calories</span>
+                    <span className="text-xs font-black text-slate-950 dark:text-white">{sensorData.calories} kcal</span>
+                  </div>
+                  <div className="text-center sm:text-left min-w-[70px]">
+                    <span className="text-[9px] font-bold text-slate-400 uppercase block">Cadence</span>
+                    <span className="text-xs font-black text-slate-950 dark:text-white">{sensorData.cadence} SPM</span>
+                  </div>
+                  <div className="text-center sm:text-left min-w-[70px]">
+                    <span className="text-[9px] font-bold text-slate-400 uppercase block">Speed</span>
+                    <span className="text-xs font-black text-slate-950 dark:text-white">{sensorData.walkingSpeed} km/h</span>
+                  </div>
+                  <div className="text-center sm:text-left min-w-[70px]">
+                    <span className="text-[9px] font-bold text-slate-400 uppercase block">Active</span>
+                    <span className="text-xs font-black text-slate-950 dark:text-white">{sensorData.activeMinutes} min</span>
                   </div>
                 </div>
                 
-                <div className="flex gap-4 items-center">
-                  <div className="text-right">
-                    <div className="text-sm font-black text-slate-900 dark:text-white">{sensorData.steps} Steps</div>
-                    <div className="text-4xs text-slate-400 font-bold uppercase">Current Session</div>
-                  </div>
+                {/* Right: Manual Sync and Disable Controls */}
+                <div className="flex gap-3 items-center w-full sm:w-auto justify-end">
                   <button
                     onClick={handleSyncSensor}
                     disabled={sensorSyncing}
-                    className="px-4 py-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-xs font-bold rounded-xl flex items-center gap-1.5 text-slate-700 dark:text-slate-200"
+                    className="px-4 py-2.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-750 text-xs font-bold rounded-xl flex items-center gap-1.5 text-slate-750 dark:text-slate-200 cursor-pointer transition-all"
                   >
                     {sensorSyncing ? (
                       <RefreshCcw className="w-3.5 h-3.5 animate-spin" />
@@ -707,6 +828,14 @@ export default function Dashboard() {
                         Sync Now
                       </>
                     )}
+                  </button>
+                  
+                  <button 
+                    onClick={handleDisableSensors}
+                    className="px-4 py-2.5 bg-red-500/10 hover:bg-red-500/20 text-red-550 dark:text-red-400 text-xs font-bold rounded-xl cursor-pointer transition-all"
+                    title="Pause steps tracking and stop counting"
+                  >
+                    Disable
                   </button>
                 </div>
               </div>
