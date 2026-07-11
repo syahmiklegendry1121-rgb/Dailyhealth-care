@@ -272,37 +272,46 @@ class MobileSensorManager {
     if (typeof window === 'undefined') return;
 
     let lastStepTime = 0;
-    let smoothMagnitude = 0; 
-    const alpha = 0.2; // Low-pass filter smoothing coefficient
-    const stepThreshold = 1.6; // Dynamic threshold above gravity baseline (m/s^2)
-    const stepCooldown = 380; // Standard human walk step cooldown in ms (approx 160 steps/min maximum)
+    let gravityBaseline = 9.8; // Baseline orientation tracker
+    let smoothNetAcc = 0; 
+    const alpha = 0.15; // Low-pass filter smoothing coefficient
+    const stepThreshold = 1.8; // Net linear acceleration threshold in m/s^2
+    const stepCooldown = 380; // Minimum cadence cooldown (ms)
 
     if (this.motionHandler) {
       window.removeEventListener('devicemotion', this.motionHandler);
     }
 
     this.motionHandler = (event) => {
-      // Prefer linear acceleration (excludes gravity) over accelerationIncludingGravity
-      const acc = event.acceleration || event.accelerationIncludingGravity;
+      // Resolve active acceleration source, falling back to gravity-included if linear returns null coordinates
+      let acc = event.acceleration;
+      if (!acc || acc.x === null || acc.y === null || acc.z === null) {
+        acc = event.accelerationIncludingGravity;
+      }
       if (!acc) return;
 
       const x = acc.x || 0;
       const y = acc.y || 0;
       const z = acc.z || 0;
 
-      // 1. Calculate vector magnitude
-      let magnitude = Math.sqrt(x * x + y * y + z * z);
+      // 1. Calculate magnitude vector
+      const magnitude = Math.sqrt(x * x + y * y + z * z);
 
-      // 2. If gravity is included, subtract the gravity baseline
+      // 2. Track dynamic gravity baseline if gravity is included
       if (acc === event.accelerationIncludingGravity) {
-        magnitude = Math.abs(magnitude - 9.80665);
+        gravityBaseline = 0.95 * gravityBaseline + 0.05 * magnitude;
+      } else {
+        gravityBaseline = 0;
       }
 
-      // 3. Smooth the magnitude using a low-pass filter
-      smoothMagnitude = alpha * magnitude + (1 - alpha) * smoothMagnitude;
+      // 3. Compute net linear acceleration
+      const netAcc = Math.abs(magnitude - gravityBaseline);
 
-      // 4. Peak-crossing check with strict walk step cooldown
-      if (smoothMagnitude > stepThreshold) {
+      // 4. Smooth net acceleration to remove high-frequency noise
+      smoothNetAcc = alpha * netAcc + (1 - alpha) * smoothNetAcc;
+
+      // 5. Cadence peak check
+      if (smoothNetAcc > stepThreshold) {
         const now = Date.now();
         if (now - lastStepTime > stepCooldown) {
           this.addSteps(1);

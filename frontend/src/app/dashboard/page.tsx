@@ -166,16 +166,23 @@ export default function Dashboard() {
     };
   }, []);
 
-  // Automatic periodic steps syncing to backend (every 3 minutes)
+  const sensorDataRef = React.useRef(sensorData);
   useEffect(() => {
-    if (!token || sensorData.steps === 0) return;
+    sensorDataRef.current = sensorData;
+  }, [sensorData]);
+
+  // Automatic periodic steps syncing to backend (every 10 seconds)
+  useEffect(() => {
+    if (!token) return;
 
     const syncInterval = setInterval(async () => {
-      await handleSyncSensor();
-    }, 180000); // 3 minutes
+      if (sensorDataRef.current.steps > 0) {
+        await handleSyncSensor();
+      }
+    }, 10000); // 10 seconds
 
     return () => clearInterval(syncInterval);
-  }, [token, sensorData.steps]);
+  }, [token]);
 
   // Manual & Auto sensor syncing
   const handleSyncSensor = async () => {
@@ -183,12 +190,13 @@ export default function Dashboard() {
     setSensorSyncing(true);
     try {
       const todayStr = new Date().toISOString().split('T')[0];
+      const currentSensor = sensorDataRef.current;
       await syncMobileSteps({
         date: todayStr,
-        count: sensorData.steps,
-        distance: sensorData.distance,
-        activeMinutes: sensorData.activeMinutes,
-        caloriesBurned: sensorData.calories,
+        count: currentSensor.steps,
+        distance: currentSensor.distance,
+        activeMinutes: currentSensor.activeMinutes,
+        caloriesBurned: currentSensor.calories,
       });
       
       // Refresh logs & charts
