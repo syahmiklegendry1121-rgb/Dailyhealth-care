@@ -449,3 +449,18 @@ body {
   margin: 0 !important;
   border: none !important;
 }
+
+/* Prevent global stadium button styles from squishing the circular avatar selection grid items */
+.luxury-monochromatic button.rounded-full.aspect-square {
+  padding: 0 !important;
+  background: transparent !important;
+  border-radius: 9999px !important;
+  box-shadow: none !important;
+  border-color: rgba(255, 255, 255, 0.15) !important;
+}
+
+.luxury-monochromatic button.rounded-full.aspect-square:hover {
+  transform: scale(1.05) !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
