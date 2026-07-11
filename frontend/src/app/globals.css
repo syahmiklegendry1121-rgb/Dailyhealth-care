@@ -346,3 +346,16 @@ body {
 .animate-shine-glow {
   animation: shine-glow 2.5s ease-out infinite;
 }
+
+/* Hide theme toggle pulse symbol button in header when monochromatic mode is active */
+.luxury-monochromatic button[title="Toggle Dark Mode"] {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: none !important;
+}
