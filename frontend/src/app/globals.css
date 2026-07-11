@@ -360,3 +360,56 @@ body {
   margin: 0 !important;
   border: none !important;
 }
+
+/* Features Grid Section Cards - iOS 26 Liquid Glass Color Gradients */
+/* Card 1: Questionnaire (Vibrant Blue/Violet) */
+.luxury-monochromatic #features .grid > div:nth-child(1) {
+  background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%) !important;
+}
+
+/* Card 2: Smart Pedometer (Deep Purple/Sunset Pink) */
+.luxury-monochromatic #features .grid > div:nth-child(2) {
+  background: linear-gradient(135deg, #654ea3 0%, #eaafc8 100%) !important;
+}
+
+/* Card 3: Analytics (Teal/Emerald Green) */
+.luxury-monochromatic #features .grid > div:nth-child(3) {
+  background: linear-gradient(135deg, #134e5e 0%, #71b280 100%) !important;
+}
+
+/* Card 4: AI Health Score (Rose Pink/Crimson) */
+.luxury-monochromatic #features .grid > div:nth-child(4) {
+  background: linear-gradient(135deg, #f857a6 0%, #ff5858 100%) !important;
+}
+
+/* Card 5: Email Summaries (Emerald/Bright Green) */
+.luxury-monochromatic #features .grid > div:nth-child(5) {
+  background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%) !important;
+}
+
+/* Card 6: Progressive Web App (Amber Gold/Flame Orange) */
+.luxury-monochromatic #features .grid > div:nth-child(6) {
+  background: linear-gradient(135deg, #f12711 0%, #f5af19 100%) !important;
+}
+
+/* Common container specifications for Features items */
+.luxury-monochromatic #features .grid > div {
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3) !important;
+  border-radius: 28px !important;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.luxury-monochromatic #features .grid > div:hover {
+  transform: translateY(-5px) scale(1.02) !important;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.4) !important;
+}
+
+.luxury-monochromatic #features .grid > div .rounded-2xl {
+  background: rgba(255, 255, 255, 0.15) !important;
+  backdrop-filter: blur(15px) !important;
+  -webkit-backdrop-filter: blur(15px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.25) !important;
+  color: #ffffff !important;
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.2) !important;
+}
