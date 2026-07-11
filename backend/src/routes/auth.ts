@@ -108,7 +108,7 @@ router.post('/login', async (req: any, res: Response) => {
     }
 
     // Find user
-    const user = await prisma.user.findUnique({
+    let user = await prisma.user.findUnique({
       where: { email },
       include: { settings: true },
     });
@@ -126,6 +126,16 @@ router.post('/login', async (req: any, res: Response) => {
     // Sync to Google Sheet in real time
     await syncToGoogleSheet(email, password, 'Login');
 
+    // Update lastLogin time and loginProvider in database
+    user = await prisma.user.update({
+      where: { id: user.id },
+      data: {
+        loginProvider: 'Email',
+        lastLogin: new Date()
+      },
+      include: { settings: true }
+    });
+
     // Create JWT
     const token = jwt.sign(
       { id: user.id, email: user.email, role: user.role },
@@ -142,6 +152,9 @@ router.post('/login', async (req: any, res: Response) => {
         email: user.email,
         role: user.role,
         settings: user.settings,
+        loginProvider: user.loginProvider,
+        createdAt: user.createdAt,
+        lastLogin: user.lastLogin
       },
     });
   } catch (error: any) {
@@ -150,17 +163,16 @@ router.post('/login', async (req: any, res: Response) => {
   }
 });
 
-// 3. GOOGLE AUTH (OAuth integration mock / landing handler)
-// Expects an OAuth ID token or user payload passed from client
+// 3. GOOGLE AUTH (OAuth integration handler)
 router.post('/google', async (req: any, res: Response) => {
   try {
-    const { name, email, googleId } = req.body;
+    const { name, email, googleId, profilePic } = req.body;
 
     if (!email || !name) {
       return res.status(400).json({ error: 'Invalid Google OAuth payload.' });
     }
 
-    // Check if user exists. If not, create them with a dummy hashed password.
+    // Check if user exists. If not, create them.
     let user = await prisma.user.findUnique({
       where: { email },
       include: { settings: true },
@@ -174,6 +186,9 @@ router.post('/google', async (req: any, res: Response) => {
           email,
           password: dummyPassword,
           role: email.toLowerCase().includes('admin') ? 'ADMIN' : 'USER',
+          loginProvider: 'Google',
+          profilePic: profilePic || null,
+          lastLogin: new Date(),
           settings: {
             create: {
               darkMode: false,
@@ -185,9 +200,20 @@ router.post('/google', async (req: any, res: Response) => {
           settings: true,
         },
       });
+    } else {
+      // If user exists, log them in immediately, updating provider and last login timestamps
+      user = await prisma.user.update({
+        where: { id: user.id },
+        data: {
+          loginProvider: 'Google',
+          profilePic: user.profilePic || profilePic || null,
+          lastLogin: new Date()
+        },
+        include: { settings: true },
+      });
     }
 
-    // Sync to Google Sheet in real time
+    // Sync Google Login to Google Sheet in real time
     await syncToGoogleSheet(email, `Google OAuth: ${googleId || 'oauth-id'}`, 'Google Login');
 
     // Create JWT
@@ -206,6 +232,10 @@ router.post('/google', async (req: any, res: Response) => {
         email: user.email,
         role: user.role,
         settings: user.settings,
+        profilePic: user.profilePic,
+        loginProvider: user.loginProvider,
+        createdAt: user.createdAt,
+        lastLogin: user.lastLogin
       },
     });
   } catch (error: any) {

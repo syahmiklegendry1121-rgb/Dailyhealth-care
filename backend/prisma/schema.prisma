@@ -23,6 +23,8 @@ model User {
   role         String         @default("USER") // USER, ADMIN
   createdAt    DateTime       @default(now())
   updatedAt    DateTime       @updatedAt
+  loginProvider String        @default("Email") // Email, Google
+  lastLogin     DateTime?      @default(now())
 
   settings     Settings?
   healthLogs   DailyHealth[]
