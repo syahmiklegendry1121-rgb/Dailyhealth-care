@@ -160,132 +160,236 @@ body {
   box-shadow: none !important;
 }
 
-/* iOS 26 Liquid Glass Effects and Color Overrides */
+/* iOS 26 Liquid Glass System Overrides */
 .luxury-monochromatic {
-  background: #000000 !important;
-  background-color: #000000 !important;
+  background: #080b11 !important;
+  background-color: #080b11 !important;
   color: #ffffff !important;
   transition: background-color 0.5s ease !important;
 }
 
+/* Beautiful vivid backlight radial glow blobs showing through the glass */
 .luxury-monochromatic::before {
   content: "";
   position: fixed;
   inset: 0;
   z-index: -2;
-  background: radial-gradient(circle at 50% -20%, #1a1a2e 0%, #000000 70%);
+  background: 
+    radial-gradient(circle at 85% 10%, rgba(0, 162, 255, 0.16) 0%, transparent 60%),
+    radial-gradient(circle at 10% 80%, rgba(139, 92, 246, 0.14) 0%, transparent 65%),
+    #080b11 !important;
   pointer-events: none;
 }
 
-/* Header blur blending */
-.luxury-monochromatic header {
-  background: rgba(0, 0, 0, 0.45) !important;
-  backdrop-filter: blur(40px) !important;
-  -webkit-backdrop-filter: blur(40px) !important;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5) !important;
+/* Translucent frosted glass containers (iOS/macOS widget style) */
+.luxury-monochromatic .glass-panel,
+.luxury-monochromatic main,
+.luxury-monochromatic card,
+.luxury-monochromatic .bg-white,
+.luxury-monochromatic .dark\:bg-slate-900,
+.luxury-monochromatic .p-8.rounded-\[32px\],
+.luxury-monochromatic .p-10.rounded-\[32px\] {
+  background: rgba(25, 33, 52, 0.35) !important;
+  backdrop-filter: blur(40px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(40px) saturate(180%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45), inset 0 1px 2px rgba(255, 255, 255, 0.15) !important;
+  color: #ffffff !important;
+  border-radius: 36px !important; /* Exquisite highly-rounded macOS widget corners */
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
 }
 
-/* Navigation button frosted styling */
+/* Quick action buttons, selectors, tabs and toggles styled as stadium pills */
+.luxury-monochromatic button,
+.luxury-monochromatic [role="button"] {
+  background: rgba(255, 255, 255, 0.05) !important;
+  backdrop-filter: blur(25px) !important;
+  -webkit-backdrop-filter: blur(25px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  color: #ffffff !important;
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.1) !important;
+  border-radius: 9999px !important; /* Perfect circular stadium pill shape! */
+  padding-left: 20px !important;
+  padding-right: 20px !important;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+/* Hover scales on stadium pills */
+.luxury-monochromatic button:hover,
+.luxury-monochromatic [role="button"]:hover {
+  background: rgba(255, 255, 255, 0.12) !important;
+  border-color: rgba(255, 255, 255, 0.25) !important;
+  box-shadow: 0 4px 15px rgba(255, 255, 255, 0.1), inset 0 1px 1px rgba(255, 255, 255, 0.25) !important;
+  transform: translateY(-1px) scale(1.02);
+}
+
+/* Form input fields rounded specification */
+.luxury-monochromatic input,
+.luxury-monochromatic select,
+.luxury-monochromatic textarea {
+  background: rgba(255, 255, 255, 0.04) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  color: #ffffff !important;
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.08) !important;
+  border-radius: 20px !important; /* Clean rounded edges */
+  transition: all 0.3s ease !important;
+}
+
+/* Premium Apple Navigation bar */
+.luxury-monochromatic header {
+  background: rgba(8, 11, 17, 0.45) !important;
+  backdrop-filter: blur(45px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(45px) saturate(180%) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5) !important;
+  border-radius: 0 0 24px 24px !important;
+}
+
+.luxury-monochromatic nav {
+  background: rgba(255, 255, 255, 0.05) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-radius: 9999px !important; /* Stadium pill nav block */
+  padding: 4px !important;
+}
+
 .luxury-monochromatic nav button {
   background: transparent !important;
   border: 1px solid transparent !important;
   color: #B0B0B0 !important;
   box-shadow: none !important;
+  border-radius: 9999px !important;
 }
 
 .luxury-monochromatic nav button[class*="bg-white"],
 .luxury-monochromatic nav button[class*="dark:bg-slate-800"] {
   background: rgba(255, 255, 255, 0.15) !important;
   backdrop-filter: blur(20px) !important;
-  border: 1px solid rgba(255, 255, 255, 0.25) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
   color: #ffffff !important;
-  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.2) !important;
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.15) !important;
 }
 
-/* Welcome Card (Gold/Green/Indigo/Black Liquid Flow) */
-.luxury-monochromatic .lg\:col-span-2.bg-gradient-to-br {
-  background: linear-gradient(135deg, #1d976c 0%, #302b63 50%, #0f0c20 100%) !important;
-  border: 1px solid rgba(255, 255, 255, 0.15) !important;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35) !important;
-}
-
-/* Health Score Card (Crimson/Rust/Orange Liquid Glow) */
-.luxury-monochromatic .grid-cols-1.lg\:grid-cols-3 > div:nth-child(2),
-.luxury-monochromatic main > div:nth-child(2) > div:nth-child(2) {
-  background: linear-gradient(135deg, #870000 0%, #190a05 60%, #000000 100%) !important;
-  border: 1px solid rgba(255, 255, 255, 0.18) !important;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35) !important;
-}
-
-/* Pedometer Sensor Widget (Teal/Deep Sea Glow) */
+/* Pedometer Sensor Widget */
 .luxury-monochromatic .p-6.rounded-\[28px\] {
-  background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%) !important;
-  border: 1px solid rgba(255, 255, 255, 0.15) !important;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2) !important;
+  background: linear-gradient(135deg, rgba(15, 32, 39, 0.4) 0%, rgba(32, 58, 67, 0.3) 100%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  border-radius: 36px !important;
 }
 
-/* Inner Pedometer stats block styled as frosted glass container */
 .luxury-monochromatic .p-6.rounded-\[28px\] > div:first-child {
-  background: rgba(255, 255, 255, 0.08) !important;
+  background: rgba(25, 33, 52, 0.35) !important;
   backdrop-filter: blur(25px) !important;
-  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  border-radius: 24px;
+}
+
+/* Interactive Health cards back-lit gradients matching iOS 26 mockup */
+/* Sleep */
+.luxury-monochromatic .grid-cols-1.md\:grid-cols-3 > div:nth-child(1) {
+  background: linear-gradient(135deg, rgba(31, 64, 104, 0.35) 0%, rgba(22, 36, 71, 0.2) 100%) !important;
+}
+
+/* Water */
+.luxury-monochromatic .grid-cols-1.md\:grid-cols-3 > div:nth-child(2) {
+  background: linear-gradient(135deg, rgba(0, 201, 255, 0.2) 0%, rgba(146, 254, 157, 0.1) 100%) !important;
+}
+
+/* Stress */
+.luxury-monochromatic .grid-cols-1.md\:grid-cols-3 > div:nth-child(3) {
+  background: linear-gradient(135deg, rgba(75, 18, 72, 0.3) 0%, rgba(240, 194, 123, 0.1) 100%) !important;
+}
+
+/* Heart Rate */
+.luxury-monochromatic .grid-cols-2.md\:grid-cols-4 > div:nth-child(1) {
+  background: linear-gradient(135deg, rgba(248, 87, 166, 0.25) 0%, rgba(255, 88, 88, 0.1) 100%) !important;
+}
+
+/* Blood Sugar */
+.luxury-monochromatic .grid-cols-2.md\:grid-cols-4 > div:nth-child(2) {
+  background: linear-gradient(135deg, rgba(255, 153, 0, 0.2) 0%, rgba(255, 91, 0, 0.1) 100%) !important;
+}
+
+/* Blood Pressure */
+.luxury-monochromatic .grid-cols-2.md\:grid-cols-4 > div:nth-child(3) {
+  background: linear-gradient(135deg, rgba(17, 153, 142, 0.2) 0%, rgba(56, 239, 125, 0.1) 100%) !important;
+}
+
+/* Medication */
+.luxury-monochromatic .grid-cols-2.md\:grid-cols-4 > div:nth-child(4) {
+  background: linear-gradient(135deg, rgba(63, 81, 181, 0.25) 0%, rgba(0, 150, 136, 0.1) 100%) !important;
+}
+
+/* Unified specifications for health dashboard grid cards */
+.luxury-monochromatic .grid-cols-1.md\:grid-cols-3 > div,
+.luxury-monochromatic .grid-cols-2.md\:grid-cols-4 > div {
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35) !important;
+  border-radius: 36px !important;
+}
+
+.luxury-monochromatic .grid-cols-1.md\:grid-cols-3 > div:hover,
+.luxury-monochromatic .grid-cols-2.md\:grid-cols-4 > div:hover {
+  transform: translateY(-5px) scale(1.02) !important;
+  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.45), inset 0 1px 1px rgba(255, 255, 255, 0.3) !important;
+}
+
+/* Features Grid Section Cards on Home Page */
+/* Card 1: Questionnaire */
+.luxury-monochromatic #features .grid > div:nth-child(1) {
+  background: linear-gradient(135deg, rgba(30, 60, 114, 0.45) 0%, rgba(42, 82, 152, 0.2) 100%) !important;
+}
+
+/* Card 2: Smart Pedometer */
+.luxury-monochromatic #features .grid > div:nth-child(2) {
+  background: linear-gradient(135deg, rgba(101, 78, 163, 0.4) 0%, rgba(234, 175, 200, 0.15) 100%) !important;
+}
+
+/* Card 3: Analytics */
+.luxury-monochromatic #features .grid > div:nth-child(3) {
+  background: linear-gradient(135deg, rgba(19, 78, 94, 0.45) 0%, rgba(113, 178, 128, 0.2) 100%) !important;
+}
+
+/* Card 4: AI Health Score */
+.luxury-monochromatic #features .grid > div:nth-child(4) {
+  background: linear-gradient(135deg, rgba(248, 87, 166, 0.4) 0%, rgba(255, 88, 88, 0.15) 100%) !important;
+}
+
+/* Card 5: Email Summaries */
+.luxury-monochromatic #features .grid > div:nth-child(5) {
+  background: linear-gradient(135deg, rgba(17, 153, 142, 0.4) 0%, rgba(56, 239, 125, 0.15) 100%) !important;
+}
+
+/* Card 6: Progressive Web App */
+.luxury-monochromatic #features .grid > div:nth-child(6) {
+  background: linear-gradient(135deg, rgba(241, 39, 17, 0.35) 0%, rgba(245, 175, 25, 0.15) 100%) !important;
+}
+
+.luxury-monochromatic #features .grid > div {
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4) !important;
+  border-radius: 36px !important;
+}
+
+.luxury-monochromatic #features .grid > div .rounded-2xl {
+  background: rgba(255, 255, 255, 0.15) !important;
+  backdrop-filter: blur(15px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
   border-radius: 20px;
-  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.2) !important;
-  padding: 16px !important;
 }
 
-/* Indicators grid card liquid colors matching iOS 26 weather/clock widgets */
-/* Grid Card 1: Sleep (Midnight Blue Glow) */
-.luxury-monochromatic .grid-cols-1.sm\:grid-cols-2.lg\:grid-cols-3 > div:nth-child(1) {
-  background: linear-gradient(135deg, #1f4068 0%, #162447 60%, #1a1a2e 100%) !important;
+/* Interactive Health metrics directory cards */
+.luxury-monochromatic .max-w-8xl .grid .group.p-8 {
+  border-radius: 36px !important;
 }
 
-/* Grid Card 2: Stress (Sunset Orange/Violet Glow) */
-.luxury-monochromatic .grid-cols-1.sm\:grid-cols-2.lg\:grid-cols-3 > div:nth-child(2) {
-  background: linear-gradient(135deg, #4b1248 0%, #f0c27b 100%) !important;
+.luxury-monochromatic .max-w-8xl .grid .group.p-8 .rounded-2xl {
+  background: rgba(255, 255, 255, 0.12) !important;
+  border: 1px solid rgba(255, 255, 255, 0.18) !important;
 }
 
-/* Grid Card 3: Water (Turquoise Aqua Glow) */
-.luxury-monochromatic .grid-cols-1.sm\:grid-cols-2.lg\:grid-cols-3 > div:nth-child(3) {
-  background: linear-gradient(135deg, #00c9ff 0%, #92fe9d 100%) !important;
-}
-
-/* Grid Card 4: Heart Rate (Blood Crimson Glow) */
-.luxury-monochromatic .grid-cols-1.sm\:grid-cols-2.lg\:grid-cols-3 > div:nth-child(4) {
-  background: linear-gradient(135deg, #f857a6 0%, #ff5858 100%) !important;
-}
-
-/* Grid Card 5: Blood Pressure (Emerald Sage Glow) */
-.luxury-monochromatic .grid-cols-1.sm\:grid-cols-2.lg\:grid-cols-3 > div:nth-child(5) {
-  background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%) !important;
-}
-
-/* Grid Card 6: Blood Sugar (Bright Amber/Rust Glow) */
-.luxury-monochromatic .grid-cols-1.sm\:grid-cols-2.lg\:grid-cols-3 > div:nth-child(6) {
-  background: linear-gradient(135deg, #ff9900 0%, #ff5b00 100%) !important;
-}
-
-/* Apply unified Apple liquid glass panel styling for card overlays */
-.luxury-monochromatic .grid-cols-1.sm\:grid-cols-2.lg\:grid-cols-3 > div {
-  border: 1px solid rgba(255, 255, 255, 0.15) !important;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3) !important;
-  border-radius: 24px !important;
-  transition: transform 0.3s ease !important;
-}
-
-/* Inner elements and badges become frosted glass pill buttons */
-.luxury-monochromatic .grid-cols-1.sm\:grid-cols-2.lg\:grid-cols-3 > div .rounded-xl,
-.luxury-monochromatic .grid-cols-1.sm\:grid-cols-2.lg\:grid-cols-3 > div .rounded-2xl {
-  background: rgba(255, 255, 255, 0.14) !important;
-  backdrop-filter: blur(20px) !important;
-  -webkit-backdrop-filter: blur(20px) !important;
-  border: 1px solid rgba(255, 255, 255, 0.25) !important;
-  color: #ffffff !important;
-  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.2) !important;
-}
-
-/* Unified text coloring inside liquid containers */
+/* Typography styles */
 .luxury-monochromatic text,
 .luxury-monochromatic span,
 .luxury-monochromatic p,
@@ -306,31 +410,7 @@ body {
   color: rgba(255, 255, 255, 0.7) !important;
 }
 
-/* Apple buttons styled as translucent glass tabs */
-.luxury-monochromatic button,
-.luxury-monochromatic input,
-.luxury-monochromatic select,
-.luxury-monochromatic textarea,
-.luxury-monochromatic [role="button"] {
-  background: rgba(255, 255, 255, 0.1) !important;
-  backdrop-filter: blur(20px) !important;
-  -webkit-backdrop-filter: blur(20px) !important;
-  border: 1px solid rgba(255, 255, 255, 0.15) !important;
-  color: #ffffff !important;
-  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.2) !important;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
-}
-
-.luxury-monochromatic button:hover,
-.luxury-monochromatic select:hover,
-.luxury-monochromatic [role="button"]:hover {
-  background: rgba(255, 255, 255, 0.2) !important;
-  border: 1px solid rgba(255, 255, 255, 0.35) !important;
-  box-shadow: 0 4px 15px rgba(255, 255, 255, 0.15), inset 0 1px 1px rgba(255, 255, 255, 0.3) !important;
-  transform: translateY(-1px);
-}
-
-/* Floating and Shine Animations */
+/* Floating & Shine Animations */
 @keyframes float-gentle {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-3px); }
@@ -359,57 +439,4 @@ body {
   padding: 0 !important;
   margin: 0 !important;
   border: none !important;
-}
-
-/* Features Grid Section Cards - iOS 26 Liquid Glass Color Gradients */
-/* Card 1: Questionnaire (Vibrant Blue/Violet) */
-.luxury-monochromatic #features .grid > div:nth-child(1) {
-  background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%) !important;
-}
-
-/* Card 2: Smart Pedometer (Deep Purple/Sunset Pink) */
-.luxury-monochromatic #features .grid > div:nth-child(2) {
-  background: linear-gradient(135deg, #654ea3 0%, #eaafc8 100%) !important;
-}
-
-/* Card 3: Analytics (Teal/Emerald Green) */
-.luxury-monochromatic #features .grid > div:nth-child(3) {
-  background: linear-gradient(135deg, #134e5e 0%, #71b280 100%) !important;
-}
-
-/* Card 4: AI Health Score (Rose Pink/Crimson) */
-.luxury-monochromatic #features .grid > div:nth-child(4) {
-  background: linear-gradient(135deg, #f857a6 0%, #ff5858 100%) !important;
-}
-
-/* Card 5: Email Summaries (Emerald/Bright Green) */
-.luxury-monochromatic #features .grid > div:nth-child(5) {
-  background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%) !important;
-}
-
-/* Card 6: Progressive Web App (Amber Gold/Flame Orange) */
-.luxury-monochromatic #features .grid > div:nth-child(6) {
-  background: linear-gradient(135deg, #f12711 0%, #f5af19 100%) !important;
-}
-
-/* Common container specifications for Features items */
-.luxury-monochromatic #features .grid > div {
-  border: 1px solid rgba(255, 255, 255, 0.15) !important;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3) !important;
-  border-radius: 28px !important;
-  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
-}
-
-.luxury-monochromatic #features .grid > div:hover {
-  transform: translateY(-5px) scale(1.02) !important;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.4) !important;
-}
-
-.luxury-monochromatic #features .grid > div .rounded-2xl {
-  background: rgba(255, 255, 255, 0.15) !important;
-  backdrop-filter: blur(15px) !important;
-  -webkit-backdrop-filter: blur(15px) !important;
-  border: 1px solid rgba(255, 255, 255, 0.25) !important;
-  color: #ffffff !important;
-  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.2) !important;
 }
