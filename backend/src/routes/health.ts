@@ -177,43 +177,44 @@ router.post('/submit', authenticateJWT, async (req: AuthenticatedRequest, res: R
       }
     });
 
-    // Fetch user details to send email
+    // Fetch user details and trigger email asynchronously in the background (fire-and-forget)
     const user = await prisma.user.findUnique({ where: { id: userId } });
     if (user && user.email) {
-      try {
-        await sendDailyHealthReport({
-          name: user.name,
-          email: user.email,
-          date,
-          score: scoreResult.score,
-          rating: scoreResult.rating,
-          sleep: { duration: scoreInput.sleepDuration, quality: scoreInput.sleepQuality },
-          stress: scoreInput.stressLevel,
-          water: scoreInput.waterGlasses,
-          steps: scoreInput.stepsCount,
-          calories: scoreInput.foodCalories,
-          mood: scoreInput.moodEmoji,
-          insights: aiInsightsList,
-        });
+      (async () => {
+        try {
+          await sendDailyHealthReport({
+            name: user.name,
+            email: user.email,
+            date,
+            score: scoreResult.score,
+            rating: scoreResult.rating,
+            sleep: { duration: scoreInput.sleepDuration, quality: scoreInput.sleepQuality },
+            stress: scoreInput.stressLevel,
+            water: scoreInput.waterGlasses,
+            steps: scoreInput.stepsCount,
+            calories: scoreInput.foodCalories,
+            mood: scoreInput.moodEmoji,
+            insights: aiInsightsList,
+          });
 
-        // Store Email history log
-        await prisma.emailHistory.create({
-          data: {
-            userId,
-            subject: `Daily Health Summary - ${date}`,
-            status: 'success'
-          }
-        });
-      } catch (mailError) {
-        console.error('Failed to send email summary:', mailError);
-        await prisma.emailHistory.create({
-          data: {
-            userId,
-            subject: `Daily Health Summary - ${date}`,
-            status: 'failed'
-          }
-        });
-      }
+          await prisma.emailHistory.create({
+            data: {
+              userId,
+              subject: `Daily Health Summary - ${date}`,
+              status: 'success'
+            }
+          });
+        } catch (mailError) {
+          console.error('Failed to send email summary:', mailError);
+          await prisma.emailHistory.create({
+            data: {
+              userId,
+              subject: `Daily Health Summary - ${date}`,
+              status: 'failed'
+            }
+          });
+        }
+      })();
     }
 
     res.status(200).json({
