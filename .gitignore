@@ -34,3 +34,7 @@ build/
 .vscode/
 .DS_Store
 *.tsbuildinfo
+
+# Private credentials files
+googleclientID.json
+**/googleclientID.json
