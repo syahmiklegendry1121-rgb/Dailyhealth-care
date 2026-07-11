@@ -290,6 +290,8 @@ export default function SettingsTab({ onLanguageChange }: SettingsTabProps) {
       if (val) {
         document.documentElement.classList.add('luxury-monochromatic');
         localStorage.setItem('theme_luxury_mono', 'true');
+        // Force dark mode theme
+        handleUpdateSettings('darkMode', true);
       } else {
         document.documentElement.classList.remove('luxury-monochromatic');
         localStorage.setItem('theme_luxury_mono', 'false');
