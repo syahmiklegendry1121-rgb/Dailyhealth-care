@@ -558,6 +558,22 @@ body {
   box-shadow: none !important;
 }
 
+/* Reset button styling overrides for input eye visibility toggles */
+.luxury-monochromatic button.eye-toggle-button {
+  padding: 0 !important;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  width: auto !important;
+  height: auto !important;
+}
+
+.luxury-monochromatic button.eye-toggle-button:hover {
+  transform: scale(1.1) !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
 /* Reset mobile bottom navigation bar options to their standard visual layout */
 .luxury-monochromatic .mobile-bottom-nav button {
   background: transparent !important;
