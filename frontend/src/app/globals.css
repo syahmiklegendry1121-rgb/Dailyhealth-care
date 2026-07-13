@@ -86,7 +86,10 @@ body {
   border: 1px solid rgba(var(--card-border-rgb), 0.8);
   border-radius: 8px;
   color: rgb(var(--foreground-rgb));
-  padding: 10px 14px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  padding-left: 14px;
+  padding-right: 14px;
   outline: none;
   transition: all 0.2s ease;
 }
@@ -200,21 +203,28 @@ body {
   transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
 }
 
-/* Smooth global transitions for layout and interactive elements under Monochromatic Mode */
-.luxury-monochromatic body,
-.luxury-monochromatic div,
-.luxury-monochromatic header,
-.luxury-monochromatic main,
-.luxury-monochromatic section,
-.luxury-monochromatic nav,
+/* Smooth global transitions for interactive elements under Monochromatic Mode */
 .luxury-monochromatic button,
 .luxury-monochromatic a,
 .luxury-monochromatic input,
 .luxury-monochromatic select,
 .luxury-monochromatic textarea,
 .luxury-monochromatic svg,
-.luxury-monochromatic path {
-  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
+.luxury-monochromatic path,
+.luxury-monochromatic [role="button"] {
+  transition: color 0.4s cubic-bezier(0.16, 1, 0.3, 1), 
+              background-color 0.4s cubic-bezier(0.16, 1, 0.3, 1), 
+              border-color 0.4s cubic-bezier(0.16, 1, 0.3, 1), 
+              box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1), 
+              transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), 
+              opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+/* Smooth hover transition specifically for health cards */
+.luxury-monochromatic .grid-cols-1.md\:grid-cols-3 > div,
+.luxury-monochromatic .grid-cols-2.md\:grid-cols-4 > div,
+.luxury-monochromatic #features .grid > div {
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
 }
 
 /* Quick action buttons, selectors, tabs and toggles styled as macOS premium buttons */
@@ -254,9 +264,16 @@ body {
   .luxury-monochromatic input,
   .luxury-monochromatic select,
   .luxury-monochromatic textarea {
-    padding: 8px 12px !important;
+    padding-top: 8px !important;
+    padding-bottom: 8px !important;
     font-size: 0.75rem !important;
     border-radius: 14px !important;
+  }
+  .luxury-monochromatic input:not(.pl-10),
+  .luxury-monochromatic select,
+  .luxury-monochromatic textarea {
+    padding-left: 12px !important;
+    padding-right: 12px !important;
   }
 }
 
@@ -558,4 +575,15 @@ body {
 .luxury-monochromatic .mobile-bottom-nav button:hover {
   background: rgba(255, 255, 255, 0.08) !important;
   transform: none !important;
+}
+
+/* Ensure left and right icon padding takes precedence on inputs across all themes and viewports */
+input.pl-10 {
+  padding-left: 2.5rem !important;
+}
+input.pr-10 {
+  padding-right: 2.5rem !important;
+}
+input.pl-12 {
+  padding-left: 3rem !important;
 }
