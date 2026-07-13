@@ -178,6 +178,35 @@ export function generateAIInsights(data: HealthInput, score: number): string[] {
   // Blood Pressure / Clinical insights
   if (data.bpSystolic >= 140 || data.bpDiastolic >= 90) {
     insights.push("Your blood pressure reading is in the hypertensive range. Please consult your physician if it stays high.");
+  } else if (data.bpSystolic <= 90 || data.bpDiastolic <= 60) {
+    insights.push("Blood pressure reading is in the low range. Drink water and sit up slowly; check with a physician if you feel dizzy.");
+  }
+
+  // Heart Rate insights
+  if (data.heartRateBpm > 100) {
+    insights.push(`Your heart rate is elevated (${data.heartRateBpm} bpm). Rest and re-measure; if it remains high while resting, consult your physician.`);
+  } else if (data.heartRateBpm < 55) {
+    insights.push(`Your heart rate is below 55 bpm (${data.heartRateBpm} bpm). If you experience dizziness or fatigue, seek professional clinical advice.`);
+  }
+
+  // Medication compliance insights
+  if (!data.medsTaken) {
+    insights.push("Medications were not logged as taken today. Consistent adherence is vital for treatment success. Set daily alerts.");
+  }
+
+  // Critical hydration warning
+  if (data.waterGlasses <= 3) {
+    insights.push("Critical dehydration alert: You drank 3 or fewer glasses of water today. Drink a full glass now to restore cellular function.");
+  }
+
+  // Sleep Quality & Stress correlation
+  if (data.sleepQuality < 5 && data.stressLevel > 6) {
+    insights.push("High stress and low sleep quality often form a loop. Try a screen-free winding-down ritual or guided meditation tonight.");
+  }
+
+  // Sedentary / low activity alert
+  if (data.stepsCount < 2500 && data.exerciseDuration < 10) {
+    insights.push("Extremely low activity levels. Standing up and stretching for 2 minutes every hour can improve circulation and joint flexibility.");
   }
 
   // Generic score insights

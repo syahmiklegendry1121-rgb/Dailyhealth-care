@@ -15,7 +15,7 @@ if (typeof window !== 'undefined' && !(window as any).__fetchPatched) {
           window.location.href = '/auth';
         }
       }
-    } catch (e) {}
+    } catch {}
     return res;
   };
   (window as any).__fetchPatched = true;
