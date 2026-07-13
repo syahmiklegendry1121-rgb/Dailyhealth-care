@@ -457,10 +457,24 @@ export default function ProfileTab({ onProfileUpdate }: ProfileTabProps) {
           </div>
 
           <div className="p-6 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
-            <h4 className="font-extrabold text-slate-950 dark:text-white text-xs uppercase tracking-wide flex items-center gap-1.5">
-              <Award className="w-4 h-4 text-yellow-500" />
-              Daily Targets
-            </h4>
+            <div className="flex justify-between items-center mb-1">
+              <h4 className="font-extrabold text-slate-950 dark:text-white text-xs uppercase tracking-wide flex items-center gap-1.5">
+                <Award className="w-4 h-4 text-yellow-500" />
+                Daily Targets
+              </h4>
+              <button
+                type="button"
+                onClick={() => {
+                  setTargetSteps(10000);
+                  setTargetWater(8);
+                  setTargetSleep(8);
+                  setTargetCalories(2200);
+                }}
+                className="default-targets-btn text-3xs bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 px-2 py-1 rounded-md text-slate-650 dark:text-slate-300 font-bold transition-all cursor-pointer"
+              >
+                Default
+              </button>
+            </div>
             
             <div className="space-y-3">
               <div>

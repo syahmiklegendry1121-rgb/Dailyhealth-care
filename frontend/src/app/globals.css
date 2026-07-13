@@ -617,3 +617,20 @@ input.pl-12 {
 .dark .features-grid > div:hover {
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4) !important;
 }
+
+/* Reset button styling overrides for Daily Targets Default button */
+.luxury-monochromatic button.default-targets-btn {
+  padding: 4px 8px !important;
+  background: rgba(255, 255, 255, 0.08) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  box-shadow: none !important;
+  border-radius: 6px !important;
+  width: auto !important;
+  height: auto !important;
+}
+
+.luxury-monochromatic button.default-targets-btn:hover {
+  background: rgba(255, 255, 255, 0.16) !important;
+  transform: none !important;
+  box-shadow: none !important;
+}
