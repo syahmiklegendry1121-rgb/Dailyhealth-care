@@ -450,7 +450,7 @@ export default function Dashboard() {
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id as any)}
-                className={`flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-bold transition-all ${activeTab === tab.id ? 'bg-white dark:bg-slate-800 text-blue-600 dark:text-blue-400 shadow-sm' : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-355'}`}
+                className={`flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-bold transition-all ${activeTab === tab.id ? 'active-tab bg-white dark:bg-slate-800 text-blue-600 dark:text-blue-400 shadow-sm' : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-355'}`}
               >
                 <tab.icon className="w-3.5 h-3.5" />
                 {t(tab.id as TranslationKey)}
@@ -460,7 +460,7 @@ export default function Dashboard() {
             {user?.role === 'ADMIN' && (
               <button
                 onClick={() => setActiveTab('admin')}
-                className={`flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-bold transition-all ${activeTab === 'admin' ? 'bg-white dark:bg-slate-855 text-purple-600 dark:text-purple-400 shadow-sm' : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-355'}`}
+                className={`flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-bold transition-all ${activeTab === 'admin' ? 'active-tab bg-white dark:bg-slate-855 text-purple-600 dark:text-purple-400 shadow-sm' : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-355'}`}
               >
                 <ShieldCheck className="w-3.5 h-3.5" />
                 {t('adminPanel')}
@@ -577,7 +577,7 @@ export default function Dashboard() {
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id as any)}
-            className={`flex flex-col items-center gap-1 py-1 px-3 rounded-lg text-4xs font-bold transition-all ${activeTab === tab.id ? 'text-blue-500' : 'text-slate-450 hover:text-slate-700'}`}
+            className={`flex flex-col items-center gap-1 py-1 px-3 rounded-lg text-4xs font-bold transition-all ${activeTab === tab.id ? 'active-tab text-blue-500' : 'text-slate-450 hover:text-slate-700'}`}
           >
             <tab.icon className="w-5 h-5" />
             {t(tab.id as TranslationKey)}

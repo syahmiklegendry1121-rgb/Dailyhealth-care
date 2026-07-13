@@ -574,23 +574,63 @@ body {
   box-shadow: none !important;
 }
 
-/* Reset mobile bottom navigation bar options to their standard visual layout */
+/* Reset mobile bottom navigation bar into a premium iOS/macOS floating dock */
+.luxury-monochromatic .mobile-bottom-nav {
+  bottom: 16px !important;
+  left: 16px !important;
+  right: 16px !important;
+  width: calc(100% - 32px) !important;
+  background: rgba(25, 33, 52, 0.45) !important;
+  backdrop-filter: blur(40px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(40px) saturate(180%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45), inset 0 1px 1px rgba(255, 255, 255, 0.15) !important;
+  border-radius: 28px !important;
+  padding: 8px 12px !important;
+  display: flex !important;
+  justify-content: space-around !important;
+  align-items: center !important;
+}
+
 .luxury-monochromatic .mobile-bottom-nav button {
   background: transparent !important;
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
-  border: none !important;
+  border: 1px solid transparent !important;
   box-shadow: none !important;
-  border-radius: 8px !important;
-  padding: 4px 12px !important;
-  width: auto !important;
+  border-radius: 20px !important;
+  padding: 8px 10px !important;
+  width: 22% !important;
   height: auto !important;
-  transition: all 0.2s ease !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  gap: 4px !important;
+  color: rgba(255, 255, 255, 0.45) !important;
+  font-size: 0.65rem !important; /* Adjusted readable size */
+  font-weight: 800 !important;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
 }
 
 .luxury-monochromatic .mobile-bottom-nav button:hover {
-  background: rgba(255, 255, 255, 0.08) !important;
-  transform: none !important;
+  background: rgba(255, 255, 255, 0.05) !important;
+  color: rgba(255, 255, 255, 0.8) !important;
+  transform: translateY(-1px) !important;
+}
+
+/* Premium Apple Liquid Glass active tabs overlay inside Monochromatic Mode */
+.luxury-monochromatic .mobile-bottom-nav button.active-tab {
+  background: rgba(255, 255, 255, 0.14) !important;
+  border: 1px solid rgba(255, 255, 255, 0.22) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2), inset 0 1px 1px rgba(255, 255, 255, 0.25) !important;
+  color: #ffffff !important;
+  transform: scale(1.02) !important;
+}
+
+/* Desktop header active tab styling in Monochromatic Mode to match the custom glassy design */
+.luxury-monochromatic header nav button.active-tab {
+  background: rgba(255, 255, 255, 0.12) !important;
+  border-color: rgba(255, 255, 255, 0.22) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25), inset 0 1px 1px rgba(255, 255, 255, 0.25) !important;
+  color: #ffffff !important;
 }
 
 /* Ensure left and right icon padding takes precedence on inputs across all themes and viewports */
