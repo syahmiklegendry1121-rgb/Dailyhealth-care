@@ -605,7 +605,6 @@ export default function LandingPage() {
               <Link
                 key={card.id}
                 href={`/education?metric=${card.id}`}
-                target="_blank"
                 className="group p-8 rounded-[32px] bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-lg hover:border-blue-500/30 transition-all duration-300 hover:scale-[1.02] transform flex flex-col justify-between text-left h-72 cursor-pointer"
               >
                 <div>
