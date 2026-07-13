@@ -603,3 +603,17 @@ input.pr-10 {
 input.pl-12 {
   padding-left: 3rem !important;
 }
+
+/* Features Grid Cards Hover Lifting Effect */
+.features-grid > div {
+  transition: all 0.3s ease !important;
+}
+
+.features-grid > div:hover {
+  transform: translateY(-5px) !important;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08) !important;
+}
+
+.dark .features-grid > div:hover {
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4) !important;
+}

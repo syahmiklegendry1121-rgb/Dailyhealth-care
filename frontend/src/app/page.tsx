@@ -442,7 +442,7 @@ export default function LandingPage() {
           </div>
 
           {/* Expanded 3x2 Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+          <div className="features-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
             
             {/* Feature 1 */}
             <div className="p-9.5 rounded-[32px] bg-slate-50 dark:bg-slate-900/80 border border-slate-200/60 dark:border-slate-800/80 hover:border-blue-500/30 transition-all duration-300 flex flex-col justify-between gap-8 text-left shadow-sm">
