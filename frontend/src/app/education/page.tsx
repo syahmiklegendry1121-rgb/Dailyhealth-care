@@ -1,7 +1,7 @@
 'use client';
 
 import React, { Suspense, useState, useEffect } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { 
   Heart, Activity, Moon, Droplet, Flame, Compass, Pill, ShieldAlert, 
@@ -12,6 +12,7 @@ import { translations } from '@/utils/translations';
 
 function EducationContent() {
   const searchParams = useSearchParams();
+  const router = useRouter();
   const metric = searchParams.get('metric') || 'sleep';
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [appLanguage, setAppLanguage] = useState('en');
@@ -299,8 +300,8 @@ function EducationContent() {
               {isDarkMode ? 'Light Mode' : 'Dark Mode'}
             </button>
             <button
-              onClick={() => window.close()}
-              className="px-4 py-2 bg-slate-200 dark:bg-slate-850 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 font-extrabold rounded-xl text-xs flex items-center gap-1.5 cursor-pointer transition-all"
+              onClick={() => router.push('/#directory')}
+              className="px-4 py-2 bg-slate-200 dark:bg-slate-855 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 font-extrabold rounded-xl text-xs flex items-center gap-1.5 cursor-pointer transition-all"
             >
               <ArrowLeft className="w-3.5 h-3.5" /> Close Tab
             </button>
@@ -427,7 +428,7 @@ function EducationContent() {
       <footer className="py-8 bg-slate-900 text-slate-500 text-xs border-t border-slate-850 mt-12">
         <div className="max-w-6xl mx-auto px-6 text-center flex flex-col sm:flex-row justify-between items-center gap-4">
           <span>© 2026 DailyHealth Monitoring. All guidelines compiled from standard clinical datasets.</span>
-          <button onClick={() => window.close()} className="text-blue-400 hover:underline font-bold">Close Window</button>
+          <button onClick={() => router.push('/#directory')} className="text-blue-400 hover:underline font-bold">Close Window</button>
         </div>
       </footer>
     </div>
