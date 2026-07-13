@@ -16,7 +16,8 @@ import SettingsTab from '@/components/SettingsTab';
 import AdminTab from '@/components/AdminTab';
 import { 
   getHealthHistory, getHealthInsights, syncMobileSteps, sensorManager, 
-  getNotifications, markNotificationAsRead, markAllNotificationsAsRead, getSettings 
+  getNotifications, markNotificationAsRead, markAllNotificationsAsRead, getSettings,
+  getProfile
 } from '@/utils/api';
 import { translations, TranslationKey } from '@/utils/translations';
 
@@ -158,6 +159,14 @@ export default function Dashboard() {
         }
       } catch (e) {
         console.warn('Failed to load language settings:', e);
+      }
+
+      // Get profile for targets
+      try {
+        const latestProfile = await getProfile();
+        setUser(latestProfile);
+      } catch (e) {
+        console.warn('Failed to load profile for targets:', e);
       }
     } catch (e) {
       console.error('Failed to load dashboard logs:', e);
@@ -380,6 +389,35 @@ export default function Dashboard() {
   }
 
   const unreadNotificationsCount = notifications.filter(n => !n.read).length;
+
+  let targetSteps = 10000;
+  let targetWater = 8;
+  let targetSleep = 8;
+
+  if (user?.goals) {
+    try {
+      const goalsObj = JSON.parse(user.goals);
+      if (goalsObj.steps) targetSteps = Number(goalsObj.steps);
+      if (goalsObj.water) targetWater = Number(goalsObj.water);
+      if (goalsObj.sleep) targetSleep = Number(goalsObj.sleep);
+    } catch (e) {
+      console.warn('Failed to parse user goals:', e);
+    }
+  }
+
+  // Weight-based hydration target if goals.water is default/unset and weight is set
+  if (user?.weight && (!user?.goals || !JSON.parse(user.goals).water)) {
+    targetWater = Math.round((Number(user.weight) * 35) / 250);
+  }
+
+  // Age-based sleep target if goals.sleep is default/unset and age is set
+  if (user?.age && (!user?.goals || !JSON.parse(user.goals).sleep)) {
+    const ageNum = Number(user.age);
+    if (ageNum < 13) targetSleep = 10;
+    else if (ageNum < 18) targetSleep = 9;
+    else if (ageNum < 65) targetSleep = 8;
+    else targetSleep = 7;
+  }
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-[#0a0f1e] text-slate-900 dark:text-slate-100 flex flex-col transition-colors duration-300">
@@ -640,7 +678,7 @@ export default function Dashboard() {
                   <div className="text-2xl font-black text-slate-900 dark:text-white">
                     {todayLog?.steps?.count ? todayLog.steps.count.toLocaleString() : sensorData.steps.toLocaleString()}
                   </div>
-                  <span className="text-3xs text-slate-400 mt-1 block">Distance: {todayLog?.steps?.distance || sensorData.distance} km</span>
+                  <span className="text-3xs text-slate-400 mt-1 block">Distance: {todayLog?.steps?.distance || sensorData.distance} km / {targetSteps} steps</span>
                 </div>
               </div>
 
@@ -654,7 +692,7 @@ export default function Dashboard() {
                   <div className="text-2xl font-black text-slate-900 dark:text-white">
                     {todayLog?.sleep?.duration ? `${todayLog.sleep.duration} hrs` : '--'}
                   </div>
-                  <span className="text-3xs text-slate-400 mt-1 block">Quality: {todayLog?.sleep?.quality || '--'}/10</span>
+                  <span className="text-3xs text-slate-400 mt-1 block">Quality: {todayLog?.sleep?.quality || '--'}/10 / {targetSleep}h</span>
                 </div>
               </div>
 
@@ -668,7 +706,7 @@ export default function Dashboard() {
                   <div className="text-2xl font-black text-slate-900 dark:text-white">
                     {todayLog?.water?.glasses ? `${todayLog.water.glasses} glasses` : '0 glasses'}
                   </div>
-                  <span className="text-3xs text-slate-400 mt-1 block">Target is 8 glasses</span>
+                  <span className="text-3xs text-slate-400 mt-1 block">Target is {targetWater} glasses</span>
                 </div>
               </div>
 
