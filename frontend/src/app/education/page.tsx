@@ -301,7 +301,7 @@ function EducationContent() {
             </button>
             <button
               onClick={() => router.push('/#directory')}
-              className="px-4 py-2 bg-slate-200 dark:bg-slate-855 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 font-extrabold rounded-xl text-xs flex items-center gap-1.5 cursor-pointer transition-all"
+              className="px-4 py-2 bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 font-extrabold rounded-xl text-xs flex items-center gap-1.5 cursor-pointer transition-all"
             >
               <ArrowLeft className="w-3.5 h-3.5" /> Close Tab
             </button>
