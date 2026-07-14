@@ -8,6 +8,7 @@ import {
   Award, TrendingUp, Sparkles, User, Settings, ArrowLeft, BookOpen, Clock, 
   UserCheck, ShieldCheck, HeartHandshake, Zap
 } from 'lucide-react';
+import Preloader from '@/components/Preloader';
 import { translations } from '@/utils/translations';
 
 function EducationContent() {
@@ -437,11 +438,7 @@ function EducationContent() {
 
 export default function EducationPage() {
   return (
-    <Suspense fallback={
-      <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-[#060a13] text-slate-450 text-xs font-bold">
-        Loading educational data...
-      </div>
-    }>
+    <Suspense fallback={<Preloader text="Loading educational reports..." />}>
       <EducationContent />
     </Suspense>
   );

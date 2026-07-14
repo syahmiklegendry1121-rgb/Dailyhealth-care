@@ -14,6 +14,7 @@ import AnalyticsTab from '@/components/AnalyticsTab';
 import ProfileTab from '@/components/ProfileTab';
 import SettingsTab from '@/components/SettingsTab';
 import AdminTab from '@/components/AdminTab';
+import Preloader from '@/components/Preloader';
 import { 
   getHealthHistory, getHealthInsights, syncMobileSteps, sensorManager, 
   getNotifications, markNotificationAsRead, markAllNotificationsAsRead, getSettings,
@@ -378,14 +379,7 @@ export default function Dashboard() {
   };
 
   if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-950">
-        <div className="flex flex-col items-center gap-3 text-slate-500">
-          <div className="w-10 h-10 border-4 border-blue-500 border-t-transparent rounded-full animate-spin" />
-          <span className="text-xs font-bold uppercase tracking-wider">Syncing Secure Cloud Node...</span>
-        </div>
-      </div>
-    );
+    return <Preloader text="Optimizing Your Health Data... Please wait." />;
   }
 
   const unreadNotificationsCount = notifications.filter(n => !n.read).length;
