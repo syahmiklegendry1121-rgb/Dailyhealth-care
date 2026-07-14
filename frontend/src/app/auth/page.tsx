@@ -559,7 +559,7 @@ function AuthFormContent() {
 
             <button
               type="submit"
-              className="w-full py-3.5 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white font-bold rounded-xl text-sm shadow-lg shadow-blue-500/20 active:scale-[0.98] transition-all duration-150 flex items-center justify-center gap-2"
+              className="w-full py-3.5 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white font-bold rounded-xl text-sm shadow-lg shadow-blue-500/20 active:scale-[0.98] transition-all duration-150 flex items-center justify-center gap-2 cursor-pointer"
               disabled={loading}
             >
               {loading ? (
@@ -568,6 +568,19 @@ function AuthFormContent() {
                 activeTab === 'login' ? 'Sign In' : 'Create Account'
               )}
             </button>
+            <div className="text-center mt-3.5">
+              <button
+                type="button"
+                onClick={() => {
+                  setShowForgotPassword(true);
+                  setError(null);
+                  setSuccess(null);
+                }}
+                className="text-3xs font-extrabold text-blue-500 dark:text-blue-400 uppercase tracking-widest hover:underline cursor-pointer"
+              >
+                Forgot Password?
+              </button>
+            </div>
           </form>
 
           {/* SEPARATOR */}
