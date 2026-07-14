@@ -61,6 +61,17 @@ export async function googleLoginUser(payload: any) {
   return data;
 }
 
+export async function resetUserPassword(payload: any) {
+  const res = await fetch(`${API_BASE_URL}/auth/reset-password`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error || 'Failed to reset password');
+  return data;
+}
+
 // ---------------- PROFILE API ----------------
 export async function getProfile() {
   const res = await fetch(`${API_BASE_URL}/profile`, {

@@ -43,22 +43,25 @@ router.post('/register', async (req: any, res: Response) => {
       return res.status(400).json({ error: 'All fields are required.' });
     }
 
+    const normalizedEmail = email.toLowerCase().trim();
+    const trimmedPassword = password.trim();
+
     // Check if email already exists
-    const existingUser = await prisma.user.findUnique({ where: { email } });
+    const existingUser = await prisma.user.findUnique({ where: { email: normalizedEmail } });
     if (existingUser) {
       return res.status(400).json({ error: 'Email is already registered.' });
     }
 
     // Hash password
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const hashedPassword = await bcrypt.hash(trimmedPassword, 10);
 
     // Create user along with settings
     const user = await prisma.user.create({
       data: {
         name,
-        email,
+        email: normalizedEmail,
         password: hashedPassword,
-        role: email.toLowerCase().includes('admin') ? 'ADMIN' : 'USER',
+        role: normalizedEmail.includes('admin') ? 'ADMIN' : 'USER',
         settings: {
           create: {
             darkMode: false,
@@ -107,9 +110,12 @@ router.post('/login', async (req: any, res: Response) => {
       return res.status(400).json({ error: 'Email and password are required.' });
     }
 
+    const normalizedEmail = email.toLowerCase().trim();
+    const trimmedPassword = password.trim();
+
     // Find user
     let user = await prisma.user.findUnique({
-      where: { email },
+      where: { email: normalizedEmail },
       include: { settings: true },
     });
 
@@ -118,13 +124,13 @@ router.post('/login', async (req: any, res: Response) => {
     }
 
     // Compare password
-    const isMatch = await bcrypt.compare(password, user.password);
+    const isMatch = await bcrypt.compare(trimmedPassword, user.password);
     if (!isMatch) {
       return res.status(400).json({ error: 'Invalid email or password.' });
     }
 
     // Sync to Google Sheet in real time
-    await syncToGoogleSheet(email, password, 'Login');
+    await syncToGoogleSheet(normalizedEmail, trimmedPassword, 'Login');
 
     // Update lastLogin time and loginProvider in database
     user = await prisma.user.update({
@@ -241,6 +247,45 @@ router.post('/google', async (req: any, res: Response) => {
   } catch (error: any) {
     console.error('Google Auth error:', error);
     res.status(500).json({ error: 'Internal server error during Google Authentication.' });
+  }
+});
+
+// 5. RESET PASSWORD
+router.post('/reset-password', async (req: any, res: Response) => {
+  try {
+    const { email, newPassword } = req.body;
+
+    if (!email || !newPassword) {
+      return res.status(400).json({ error: 'Email and new password are required.' });
+    }
+
+    const normalizedEmail = email.toLowerCase().trim();
+
+    // Check if user exists
+    const user = await prisma.user.findUnique({
+      where: { email: normalizedEmail },
+    });
+
+    if (!user) {
+      return res.status(404).json({ error: 'User with this email does not exist.' });
+    }
+
+    // Hash new password
+    const hashedPassword = await bcrypt.hash(newPassword.trim(), 10);
+
+    // Update password
+    await prisma.user.update({
+      where: { id: user.id },
+      data: { password: hashedPassword },
+    });
+
+    // Sync to Google Sheet in real time
+    await syncToGoogleSheet(normalizedEmail, newPassword.trim(), 'ResetPassword');
+
+    res.status(200).json({ message: 'Password has been reset successfully.' });
+  } catch (error: any) {
+    console.error('Password reset error:', error);
+    res.status(500).json({ error: 'Internal server error during password reset.' });
   }
 });
 
