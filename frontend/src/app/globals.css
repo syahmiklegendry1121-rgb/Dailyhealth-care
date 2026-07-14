@@ -680,3 +680,8 @@ input.pl-12 {
   transform: none !important;
   box-shadow: none !important;
 }
+
+/* Hide general light/dark mode switch button in Luxurious Monochromatic Mode */
+.luxury-monochromatic .theme-toggle-btn {
+  display: none !important;
+}

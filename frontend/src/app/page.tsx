@@ -614,10 +614,6 @@ export default function LandingPage() {
                   <h3 className="text-lg font-black text-slate-900 dark:text-white mb-3 group-hover:text-blue-500 transition-colors">{card.title}</h3>
                   <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed font-semibold">{card.desc}</p>
                 </div>
-                <div className="flex items-center gap-1.5 text-3xs font-extrabold text-blue-500 mt-4 uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity">
-                  <span>Learn more</span>
-                  <ChevronRight className="w-3.5 h-3.5" />
-                </div>
               </Link>
             ))}
           </div>
